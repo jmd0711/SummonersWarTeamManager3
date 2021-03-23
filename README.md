@@ -1,0 +1,1 @@
+# SummonersWarTeamManager3

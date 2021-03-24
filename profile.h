@@ -4,8 +4,34 @@
 #include <QObject>
 #include <QPixmap>
 
-struct Monster
+class Monster;
+
+class Team
 {
+public:
+    Team();
+    ~Team();
+
+    void addMonster(Monster *monster);
+    void removeMonster(Monster *monster);
+
+private:
+    QVector<Monster *> monsters_m;
+};
+
+class Monster
+{
+public:
+    Monster();
+    ~Monster();
+
+    friend void Team::addMonster(Monster *monster);
+    friend void Team::removeMonster(Monster *monster);
+
+private:
+    void addTeam(Team *team);
+    void removeTeam(Team *team);
+
     QString name_m;
     QString imagePath_m;
     QString element_m;
@@ -26,6 +52,8 @@ struct Monster
 
     int index_m;
     QPixmap image_m;
+
+    QVector<Team *> teams_m;
 };
 
 class Profile
@@ -35,7 +63,8 @@ public:
     ~Profile();
 
 private:
-    QVector<Monster> monsters;
+    QVector<Monster *> monsters_m;
+    QVector<Team *> teams_m;
 
 };
 

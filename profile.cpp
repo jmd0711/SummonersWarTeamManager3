@@ -5,12 +5,6 @@ Team::Team(const QJsonObject &newTeam)
     area_m = newTeam["battle"].toString();
     teamName_m = newTeam["name"].toString();
     teamDescription_m = newTeam["description"].toString();
-
-//    QJsonArray uuids = newTeam["uuid"].toArray();
-//    foreach (const QJsonValue &value, uuids)
-//    {
-//        //monsterIndexes_m.push_back(value.toInt());
-//    }
 }
 
 Team::Team(QString teamArea) :
@@ -40,7 +34,8 @@ void Team::removeMonster(Monster *monster)
     monster->removeTeam(this);
 }
 
-Monster::Monster(const QJsonObject &newMonster)
+Monster::Monster(const QJsonObject &newMonster, QImage image)
+    : image_m(image)
 {
     accuracy_m = newMonster["accuracy"].toInt();
     attack_m = newMonster["attack"].toInt();
@@ -99,8 +94,9 @@ void Profile::loadProfile(QJsonDocument &doc)
     QJsonArray monArray = obj["monsters"].toArray();
     foreach (const QJsonValue &value, monArray)
     {
-        Monster *mon = new Monster(value.toObject());
-        monsters_m.push_back(mon);
+        addMonster(value.toObject());
+//        Monster *mon = new Monster(value.toObject());
+//        monsters_m.push_back(mon);
     }
 
     //  Load Teams
@@ -116,4 +112,33 @@ void Profile::loadProfile(QJsonDocument &doc)
                 team->addMonster(mon);
         }
     }
+}
+
+int Profile::monstersSize()
+{
+    return monsters_m.size();
+}
+
+void Profile::addMonster(const QJsonObject &monsterData)
+{
+    QNetworkRequest request;
+    QNetworkAccessManager networkManager;
+    QUrl url = QUrl(QString("https://swarfarm.com/static/herders/images/monsters/"));
+    url.setPath(QString("%1%2").arg(url.path()).arg(monsterData["imagePath"].toString()));
+    request.setUrl(url);
+    QNetworkReply *reply = networkManager.get(request);
+
+    //  Not the most optimal method
+    //  Change later
+    QEventLoop loop;
+    connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
+    connect(reply, SIGNAL(error(QNetworkReply::NetworkError)), &loop, SLOT(quit()));
+    loop.exec();
+
+    QByteArray bytes = reply->readAll();
+    QImage image;
+    image.loadFromData(bytes);
+    Monster *mon = new Monster(monsterData, image);
+    monsters_m.push_back(mon);
+
 }

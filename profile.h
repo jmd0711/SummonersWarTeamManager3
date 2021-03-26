@@ -1,6 +1,7 @@
 #ifndef PROFILE_H
 #define PROFILE_H
 
+#include <QEventLoop>
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -31,27 +32,19 @@ private:
 class Monster
 {
 public:
-    Monster(const QJsonObject &newMonster);
+    Monster(const QJsonObject &newMonster, QImage image);
     ~Monster();
 
     friend void Team::addMonster(Monster *monster);
     friend void Team::removeMonster(Monster *monster);
 
-//private slots:
-//    void onDataReceived(QNetworkReply *reply);
-
-//    void onImageReceived(QNetworkReply *reply);
-
-//signals:
-//    void updated(int index);
+    QString getUuid_m() const;
 
 private:
     void addTeam(Team *team);
     void removeTeam(Team *team);
 
-//    void requestData();
-//    void requestImage();
-
+    QImage  image_m;
     QString name_m;
     QString imagePath_m;
     QString element_m;
@@ -74,18 +67,22 @@ private:
     QVector<Team *> teams_m;
 };
 
-class Profile
+class Profile : public QObject
 {
+    Q_OBJECT
 public:
     Profile();
     ~Profile();
 
     void loadProfile(QJsonDocument &doc);
 
+    int monstersSize();
+
 private:
     QVector<Monster *> monsters_m;
     QVector<Team *> teams_m;
 
+    void addMonster(const QJsonObject &monsterData);
 };
 
 #endif // PROFILE_H

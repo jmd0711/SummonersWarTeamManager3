@@ -10,13 +10,14 @@ TeamManager::TeamManager(QWidget *parent)
     ui->backButton->setDisabled(true);
     ui->mainButton->setDisabled(true);
 
-    profile = new Profile(this);
+    profile = new Profile();
+    mListModel = new MonsterListModel(profile, this);
 
     setWindowTitle("Summoners War Team Manager V3.0");
     layout = new QStackedLayout();
 
     menuPage = new MainMenu(this);
-    boxPage = new BoxMenu(profile, this);
+    boxPage = new BoxMenu(mListModel, this);
     layout->addWidget(menuPage);
     layout->addWidget(boxPage);
 
@@ -166,20 +167,44 @@ void TeamManager::on_actionNew_triggered()
 
 void TeamManager::on_actionOpen_triggered()
 {
-//    QString filter = "JSON File (*.json)";
-//    QString newFilePath = QFileDialog::getOpenFileName(this, "Open Profile", "", filter);
-//    QFile file(newFilePath);
-//    filePath = newFilePath;
-//    if (!file.open(QFile::ReadOnly | QFile::Text)) {
-//        QMessageBox::warning(this, "..", "File Was Not Opened.");
-//        return;
-//    }
-//    QJsonParseError JsonParseError;
-//    QJsonDocument jsonDoc = QJsonDocument::fromJson(file.readAll(), &JsonParseError);
-//    file.close();
+    QString filter = "JSON File (*.json)";
+    QString newFilePath = QFileDialog::getOpenFileName(this, "Open Profile", "", filter);
+    QFile file(newFilePath);
+    filePath = newFilePath;
+    if (!file.open(QFile::ReadOnly | QFile::Text)) {
+        QMessageBox::warning(this, "..", "File Was Not Opened.");
+        return;
+    }
+    QJsonParseError JsonParseError;
+    QJsonDocument jsonDoc = QJsonDocument::fromJson(file.readAll(), &JsonParseError);
+    file.close();
 
-//    profile->clear();
-//    profile->loadProfile(jsonDoc);
+    //profile->clear();
+    //profile->loadProfile(jsonDoc);
+
+    QJsonObject obj = jsonDoc.object();
+
+    //  Load Monsters
+    //
+    QJsonArray monArray = obj["monsters"].toArray();
+    foreach (const QJsonValue &value, monArray)
+    {
+        addMonster(value.toObject());
+    }
+
+    //  Load Teams
+    //
+//    QJsonArray teamArray = obj["teams"].toArray();
+//    foreach (const QJsonValue &value, teamArray)
+//    {
+//        Team *team = new Team(value.toObject());
+//        QJsonArray uuids = value.toObject()["uuids"].toArray();
+//        foreach (Monster *mon, monsters_m)
+//        {
+//            if (uuids.contains(mon->getUuid()))
+//                team->addMonster(mon);
+//        }
+//    }
 }
 
 void TeamManager::on_actionSave_triggered()
@@ -225,5 +250,30 @@ void TeamManager::on_actionAbout_triggered()
                     "Images are owned by COM2US.\n"
                     "Data is gathered from SWARFARM.\n";
     QMessageBox::information(this, "About", info);
+}
+
+void TeamManager::addMonster(const QJsonObject &monsterData)
+{
+    QNetworkRequest request;
+    QNetworkAccessManager networkManager;
+    QUrl url = QUrl(QString("https://swarfarm.com/static/herders/images/monsters/"));
+    url.setPath(QString("%1%2").arg(url.path()).arg(monsterData["imagePath"].toString()));
+    request.setUrl(url);
+    QNetworkReply *reply = networkManager.get(request);
+
+    //  Not the most optimal method
+    //  Change later
+    QEventLoop loop;
+    connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
+    connect(reply, SIGNAL(error(QNetworkReply::NetworkError)), &loop, SLOT(quit()));
+    loop.exec();
+
+    QByteArray bytes = reply->readAll();
+    QImage image;
+    image.loadFromData(bytes);
+    Monster *mon = new Monster(monsterData, image);
+    //monsters_m.push_back(mon);
+
+    mListModel->addRow(mon);
 }
 

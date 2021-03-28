@@ -75,70 +75,97 @@ void Monster::removeTeam(Team *team)
     teams_m.erase(std::remove(teams_m.begin(), teams_m.end(), team), teams_m.end());
 }
 
-QString Monster::getUuid_m() const
+QImage Monster::getImage() const
+{
+    return image_m;
+}
+
+QString Monster::getName() const
+{
+    return name_m;
+}
+
+QString Monster::getUuid() const
 {
     return uuid_m;
 }
 
 Profile::Profile()
 {
-
 }
 
-void Profile::loadProfile(QJsonDocument &doc)
-{
-    QJsonObject obj = doc.object();
+//void Profile::loadProfile(QJsonDocument &doc)
+//{
+//    QJsonObject obj = doc.object();
 
-    //  Load Monsters
-    //
-    QJsonArray monArray = obj["monsters"].toArray();
-    foreach (const QJsonValue &value, monArray)
-    {
-        addMonster(value.toObject());
-//        Monster *mon = new Monster(value.toObject());
-//        monsters_m.push_back(mon);
-    }
+//    //  Load Monsters
+//    //
+//    QJsonArray monArray = obj["monsters"].toArray();
+//    foreach (const QJsonValue &value, monArray)
+//    {
+//        addMonster(value.toObject());
+////        Monster *mon = new Monster(value.toObject());
+////        monsters_m.push_back(mon);
+//    }
 
-    //  Load Teams
-    //
-    QJsonArray teamArray = obj["teams"].toArray();
-    foreach (const QJsonValue &value, teamArray)
-    {
-        Team *team = new Team(value.toObject());
-        QJsonArray uuids = value.toObject()["uuids"].toArray();
-        foreach (Monster *mon, monsters_m)
-        {
-            if (uuids.contains(mon->getUuid_m()))
-                team->addMonster(mon);
-        }
-    }
-}
+//    //  Load Teams
+//    //
+//    QJsonArray teamArray = obj["teams"].toArray();
+//    foreach (const QJsonValue &value, teamArray)
+//    {
+//        Team *team = new Team(value.toObject());
+//        QJsonArray uuids = value.toObject()["uuids"].toArray();
+//        foreach (Monster *mon, monsters_m)
+//        {
+//            if (uuids.contains(mon->getUuid()))
+//                team->addMonster(mon);
+//        }
+//    }
+//}
 
 int Profile::monstersSize()
 {
     return monsters_m.size();
 }
 
-void Profile::addMonster(const QJsonObject &monsterData)
+void Profile::addMonster(Monster* mon)
 {
-    QNetworkRequest request;
-    QNetworkAccessManager networkManager;
-    QUrl url = QUrl(QString("https://swarfarm.com/static/herders/images/monsters/"));
-    url.setPath(QString("%1%2").arg(url.path()).arg(monsterData["imagePath"].toString()));
-    request.setUrl(url);
-    QNetworkReply *reply = networkManager.get(request);
-
-    //  Not the most optimal method
-    //  Change later
-    QEventLoop loop;
-    connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
-    connect(reply, SIGNAL(error(QNetworkReply::NetworkError)), &loop, SLOT(quit()));
-    loop.exec();
-
-    QByteArray bytes = reply->readAll();
-    QImage image;
-    image.loadFromData(bytes);
-    Monster *mon = new Monster(monsterData, image);
-    monsters_m.push_back(mon);
-
+    monsters_m.insert(monsters_m.size(), mon);
 }
+
+void Profile::removeMonsterAt(int index)
+{
+    monsters_m.removeAt(index);
+}
+
+Monster* Profile::getMonster(int index) const
+{
+    if (index < monsters_m.size())
+        return monsters_m.at(index);
+    else
+        return nullptr;
+}
+
+//void Profile::addMonster(const QJsonObject &monsterData)
+//{
+//    QNetworkRequest request;
+//    QNetworkAccessManager networkManager;
+//    QUrl url = QUrl(QString("https://swarfarm.com/static/herders/images/monsters/"));
+//    url.setPath(QString("%1%2").arg(url.path()).arg(monsterData["imagePath"].toString()));
+//    request.setUrl(url);
+//    QNetworkReply *reply = networkManager.get(request);
+
+//    //  Not the most optimal method
+//    //  Change later
+//    QEventLoop loop;
+//    connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
+//    connect(reply, SIGNAL(error(QNetworkReply::NetworkError)), &loop, SLOT(quit()));
+//    loop.exec();
+
+//    QByteArray bytes = reply->readAll();
+//    QImage image;
+//    image.loadFromData(bytes);
+//    Monster *mon = new Monster(monsterData, image);
+//    monsters_m.push_back(mon);
+
+//}

@@ -15,6 +15,8 @@
 #include "boxmenu.h"
 #include "areamenu.h"
 #include "teammenu.h"
+
+#include "monsterListmodel.h"
 #include "profile.h"
 
 QT_BEGIN_NAMESPACE
@@ -57,6 +59,7 @@ private:
 
     Profile *profile;
     QString filePath;
+    MonsterListModel *mListModel;
 
     int lastPageIndex;
     QVector<int> lastPageStack;
@@ -72,5 +75,6 @@ private:
     AreaMenu *riftPage;
     TeamMenu *towerPage;        // TeamMenu
 
+    void addMonster(const QJsonObject &monsterData);
 };
 #endif // TEAMMANAGER_H

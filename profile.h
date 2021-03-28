@@ -38,7 +38,11 @@ public:
     friend void Team::addMonster(Monster *monster);
     friend void Team::removeMonster(Monster *monster);
 
-    QString getUuid_m() const;
+    QString getUuid() const;
+
+    QString getName() const;
+
+    QImage getImage() const;
 
 private:
     void addTeam(Team *team);
@@ -72,17 +76,22 @@ class Profile : public QObject
     Q_OBJECT
 public:
     Profile();
-    ~Profile();
+    //~Profile();
 
-    void loadProfile(QJsonDocument &doc);
+    //void loadProfile(QJsonDocument &doc);
 
     int monstersSize();
+
+    void addMonster(Monster* mon);
+    void removeMonsterAt(int index);
+
+    Monster* getMonster(int index) const;
 
 private:
     QVector<Monster *> monsters_m;
     QVector<Team *> teams_m;
 
-    void addMonster(const QJsonObject &monsterData);
+    //void addMonster(const QJsonObject &monsterData);
 };
 
 #endif // PROFILE_H

@@ -16,6 +16,8 @@ SOURCES += \
     boxmenu.cpp \
     main.cpp \
     mainmenu.cpp \
+    monsterListmodel.cpp \
+    monsterdisplay.cpp \
     monsterlistview.cpp \
     profile.cpp \
     teamlistview.cpp \
@@ -26,6 +28,8 @@ HEADERS += \
     areamenu.h \
     boxmenu.h \
     mainmenu.h \
+    monsterListmodel.h \
+    monsterdisplay.h \
     monsterlistview.h \
     profile.h \
     teamlistview.h \

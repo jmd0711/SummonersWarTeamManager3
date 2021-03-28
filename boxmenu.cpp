@@ -1,16 +1,22 @@
 #include "boxmenu.h"
 #include "ui_boxmenu.h"
 
-BoxMenu::BoxMenu(Profile *pr, QWidget *parent) :
+BoxMenu::BoxMenu(MonsterListModel *mLM, QWidget *parent) :
     QWidget(parent),
     ui(new Ui::BoxMenu),
-    profile(pr)
+    mListModel(mLM)
 {
     ui->setupUi(this);
 
+    auto proxyModel = new QSortFilterProxyModel(this);
+    proxyModel->setSourceModel(mListModel);
+
+    //ui->setModel(proxyModel);
+    ui->listView->setModel(proxyModel);
+    connect(ui->listView, &QListView::clicked, mLM, &MonsterListModel::itemDoubleClicked);
 //    monsterListWidget = new MonsterListView(profile, MonsterListView::BOX, this);
 //    ui->scrollArea->setWidgetResizable(true);
-//    ui->scrollArea->setWidget(monsterListWidget);
+//    ui->scrollArea->
 }
 
 BoxMenu::~BoxMenu()

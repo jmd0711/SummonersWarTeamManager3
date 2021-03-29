@@ -46,7 +46,7 @@ QVariant MonsterListModel::data(const QModelIndex &index, int role) const
     case Qt::DisplayRole:
         return result->getName();
     case Qt::DecorationRole:
-        return result->getImage();
+        return QPixmap::fromImage(result->getImage());
     case Qt::UserRole:
         QVariant mon = QVariant::fromValue(*result);
         return mon;
@@ -91,7 +91,7 @@ Qt::ItemFlags MonsterListModel::flags(const QModelIndex &index) const
     if (!index.isValid())
         return Qt::NoItemFlags;
 
-    return Qt::ItemIsEditable; // FIXME: Implement me!
+    return QAbstractListModel::flags(index) | Qt::ItemIsEnabled;
 }
 
 bool MonsterListModel::addRow(Monster *mon)
@@ -109,9 +109,4 @@ bool MonsterListModel::removeRow(int row)
     profile->removeMonsterAt(row);
     endRemoveRows();
     return true;
-}
-
-void MonsterListModel::itemDoubleClicked(const QModelIndex &index)
-{
-    removeRow(index.row());
 }

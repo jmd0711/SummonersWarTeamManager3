@@ -2,6 +2,8 @@
 #define MONSTERLISTMODEL_H
 
 #include <QAbstractListModel>
+#include <QPixmap>
+
 #include "profile.h"
 
 class MonsterListModel : public QAbstractListModel
@@ -32,9 +34,6 @@ public:
 
     // Remove data:
     bool removeRow(int row);
-
-public slots:
-    void itemDoubleClicked(const QModelIndex &index);
 
 private:
     Profile *profile;

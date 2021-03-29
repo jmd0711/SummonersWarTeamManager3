@@ -35,8 +35,9 @@ void BoxMenu::monsterSelected(const QModelIndex &index)
     case MonsterDisplay::DELETE:
         mListModel->removeRow(index.row());
         break;
-    case 2:
-
+    case MonsterDisplay::EDIT:
+        QVariant mon = QVariant::fromValue(monDisplay.getDataChange());
+        mListModel->setData(index, mon, Qt::EditRole);
         break;
     }
 

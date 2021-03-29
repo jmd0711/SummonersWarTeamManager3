@@ -33,6 +33,7 @@ class Monster
 {
 public:
     Monster(const QJsonObject &newMonster, QImage image);
+    Monster();
     ~Monster();
 
     friend void Team::addMonster(Monster *monster);
@@ -45,7 +46,7 @@ public:
     void setAttack(int value);
 
     bool getAwakened() const;
-    void setAwakened(bool value);
+    //  no setter
 
     int getCritDamage() const;
     void setCritDamage(int value);
@@ -66,7 +67,7 @@ public:
     void setHp(int value);
 
     int getId() const;
-    void setId(int value);
+    //  no setter
 
     QString getImagePath() const;
     //  no setter
@@ -75,7 +76,6 @@ public:
     void setLevel(int value);
 
     QString getName() const;
-    //  no setter (for now)
 
     int getPriority() const;
     void setPriority(int value);
@@ -95,6 +95,8 @@ public:
     QImage getImage() const;
     //  no setter
 
+    void setName(const QString &value);
+
 private:
     void addTeam(Team *team);
     void removeTeam(Team *team);
@@ -102,29 +104,30 @@ private:
     //  Order of JSON attributes
     int     accuracy_m;
     int     attack_m;
-    bool    awakened_m;
+    bool    awakened_m;         //
     int     critDamage_m;
     int     critRate_m;
     int     defense_m;
     QString description_m;
-    QString element_m;
+    QString element_m;          //
     int     hp_m;
-    int     id_m;
-    QString imagePath_m;
+    int     id_m;               //
+    QString imagePath_m;        //
     int     level_m;
     QString name_m;
     int     priority_m;
     int     resistance_m;
     int     speed_m;
     int     stars_m;
-    QString uuid_m;
+    QString uuid_m;             //
     //-----------------------------------------
 
     QImage  image_m;
 
     QVector<Team *> teams_m;
 };
-Q_DECLARE_METATYPE(Monster *);
+
+Q_DECLARE_METATYPE(Monster);
 
 class Profile : public QObject
 {

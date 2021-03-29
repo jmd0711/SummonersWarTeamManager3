@@ -20,6 +20,10 @@ MonsterDisplay::MonsterDisplay(Task t, QWidget *parent) :
     case MonsterDisplay::REMOVE:
         ui->doButton->setText("Remove");
         break;
+    default:
+        //  TODO handle EDIT. EDIT is only meant for returning.
+        //  Throw exception?
+        break;
     }
 }
 
@@ -28,58 +32,55 @@ MonsterDisplay::~MonsterDisplay()
     delete ui;
 }
 
-void MonsterDisplay::editContents(QVariant monPointer)
+void MonsterDisplay::editContents(QVariant monsterData)
 {
-    const Monster *monster = monPointer.value<Monster *>();
-    ui->imageLabel->setPixmap(QPixmap::fromImage(monster->getImage()));
+    //const Monster *monster = monPointer.value<Monster *>();
+    const Monster monster = monsterData.value<Monster>();
+    ui->imageLabel->setPixmap(QPixmap::fromImage(monster.getImage()));
 
-    ui->nameLabel->setText(monster->getName());
-    //TODO Stars & Awakened
+    ui->nameLabel->setText(monster.getName());
+    //TODO Awakened & element
 
-    ui->prioritySpinBox->setValue(monster->getPriority());
-    ui->levelSpinBox->setValue(monster->getLevel());
-    ui->hpSpinBox->setValue(monster->getHp());
-    ui->defenseSpinBox->setValue(monster->getDefense());
-    ui->attackSpinBox->setValue(monster->getAttack());
-    ui->speedSpinBox->setValue(monster->getSpeed());
-    ui->critRateSpinBox->setValue(monster->getCritRate());
-    ui->critDamageSpinBox->setValue(monster->getCritDamage());
-    ui->accuracySpinBox->setValue(monster->getAccuracy());
-    ui->resistanceSpinBox->setValue(monster->getResistance());
-    ui->descriptionEdit->setText(monster->getDescription());
-}
-
-void MonsterDisplay::onDeleteReleased()
-{
-    done(MonsterDisplay::DELETE);
-}
-
-void MonsterDisplay::onAddReleased()
-{
-    done(MonsterDisplay::ADD);
-}
-
-void MonsterDisplay::onRemoveReleased()
-{
-    done(MonsterDisplay::REMOVE);
+    ui->prioritySpinBox->setValue(monster.getPriority());
+    ui->levelSpinBox->setValue(monster.getLevel());
+    ui->hpSpinBox->setValue(monster.getHp());
+    ui->defenseSpinBox->setValue(monster.getDefense());
+    ui->attackSpinBox->setValue(monster.getAttack());
+    ui->speedSpinBox->setValue(monster.getSpeed());
+    ui->critRateSpinBox->setValue(monster.getCritRate());
+    ui->critDamageSpinBox->setValue(monster.getCritDamage());
+    ui->accuracySpinBox->setValue(monster.getAccuracy());
+    ui->resistanceSpinBox->setValue(monster.getResistance());
+    ui->descriptionEdit->setText(monster.getDescription());
+    ui->starsSpinBox->setValue(monster.getStars());
 }
 
 void MonsterDisplay::on_editButton_released()
-{
-//    monster->setPriority(ui->prioritySpinBox->value());
-//    monster->setLevel(ui->levelSpinBox->value());
-//    monster->setHp(ui->hpSpinBox->value());
-//    monster->setDefense(ui->defenseSpinBox->value());
-//    monster->setAttack(ui->attackSpinBox->value());
-//    monster->setSpeed(ui->speedSpinBox->value());
-//    monster->setCritRate(ui->critRateSpinBox->value());
-//    monster->setCritDamage(ui->critDamageSpinBox->value());
-//    monster->setAccuracy(ui->accuracySpinBox->value());
-//    monster->setResistance(ui->resistanceSpinBox->value());
-//    monster->setDescription(ui->descriptionEdit->toPlainText());
+{ 
+    dataChange.setAccuracy(ui->accuracySpinBox->value());
+    dataChange.setAttack(ui->attackSpinBox->value());
+    dataChange.setCritDamage(ui->critDamageSpinBox->value());
+    dataChange.setCritRate(ui->critRateSpinBox->value());
+    dataChange.setDefense(ui->defenseSpinBox->value());
+    dataChange.setDescription(ui->descriptionEdit->toPlainText());
+    dataChange.setHp((ui->hpSpinBox->value()));
+    dataChange.setLevel((ui->levelSpinBox->value()));
+    dataChange.setName(ui->nameLabel->text());  //  change to textedit
+    dataChange.setPriority(ui->prioritySpinBox->value());
+    dataChange.setResistance(ui->resistanceSpinBox->value());
+    dataChange.setSpeed(ui->speedSpinBox->value());
+    dataChange.setStars(ui->starsSpinBox->value());
+    done(MonsterDisplay::EDIT);
 }
 
 void MonsterDisplay::on_doButton_released()
 {
-    done(ts);
+    done(task);
 }
+
+Monster MonsterDisplay::getDataChange() const
+{
+    return dataChange;
+}
+
+

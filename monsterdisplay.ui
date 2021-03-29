@@ -33,9 +33,12 @@
         </widget>
        </item>
        <item>
-        <widget class="QLabel" name="label_3">
-         <property name="text">
-          <string>STARS</string>
+        <widget class="QSpinBox" name="starsSpinBox">
+         <property name="minimum">
+          <number>1</number>
+         </property>
+         <property name="maximum">
+          <number>6</number>
          </property>
         </widget>
        </item>

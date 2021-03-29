@@ -48,20 +48,42 @@ QVariant MonsterListModel::data(const QModelIndex &index, int role) const
     case Qt::DecorationRole:
         return result->getImage();
     case Qt::UserRole:
-        QVariant monPtr = QVariant::fromValue(result);
-        return monPtr;
+        QVariant mon = QVariant::fromValue(*result);
+        return mon;
     }
     return QVariant();
 }
 
 bool MonsterListModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
-    if (data(index, role) != value) {
-        // FIXME: Implement me!
-        emit dataChanged(index, index, QVector<int>() << role);
+    if (index.isValid() && role == Qt::EditRole) {
+        Monster *currentMonster = profile->getMonster(index.row());
+        const Monster dataChange = value.value<Monster>();
+        currentMonster->setAccuracy(dataChange.getAccuracy());
+        currentMonster->setAttack(dataChange.getAttack());
+        currentMonster->setCritDamage(dataChange.getCritDamage());
+        currentMonster->setCritRate(dataChange.getCritRate());
+        currentMonster->setDefense(dataChange.getDefense());
+        currentMonster->setDescription(dataChange.getDescription());
+        currentMonster->setHp(dataChange.getHp());
+        currentMonster->setLevel(dataChange.getLevel());
+        currentMonster->setName(dataChange.getName());  //  change to textedit
+        currentMonster->setPriority(dataChange.getPriority());
+        currentMonster->setResistance(dataChange.getResistance());
+        currentMonster->setSpeed(dataChange.getSpeed());
+        currentMonster->setStars(dataChange.getStars());
+        emit dataChanged(index, index, {Qt::DisplayRole, Qt::EditRole});
+
         return true;
     }
+
     return false;
+//    if (data(index, role) != value) {
+//        // FIXME: Implement me!
+//        emit dataChanged(index, index, QVector<int>() << role);
+//        return true;
+//    }
+//    return false;
 }
 
 Qt::ItemFlags MonsterListModel::flags(const QModelIndex &index) const

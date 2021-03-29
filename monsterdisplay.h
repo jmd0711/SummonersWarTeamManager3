@@ -16,34 +16,27 @@ class MonsterDisplay : public QDialog
 public:
     enum Task
     {
-        DELETE,
-        ADD,
-        REMOVE,
+        DELETE = 1,
+        ADD = 2,
+        REMOVE = 3,
+        EDIT = 4,
     };
     explicit MonsterDisplay(Task t, QWidget *parent = nullptr);
     ~MonsterDisplay();
 
-    void editContents(QVariant monPointer);
+    void editContents(QVariant monsterData);
+
+    Monster getDataChange() const;
 
 private slots:
-    void onDeleteReleased();
-
-    void onAddReleased();
-
-    void onRemoveReleased();
-
     void on_editButton_released();
 
-signals:
-    void deleteReleased(int index);
-
-    void addReleased(QString battleName, int indexFiltered, int monsterIndex);
-
-    void removeReleased(QString battleName, int indexFiltered, int monsterIndex);
+    void on_doButton_released();
 
 private:
     Ui::MonsterDisplay *ui;
 
+    Monster dataChange;
     Task task;
 };
 

@@ -57,6 +57,28 @@ Monster::Monster(const QJsonObject &newMonster, QImage image)
     uuid_m = newMonster["uuid"].toString();
 }
 
+Monster::Monster()
+{
+    accuracy_m = 0;
+    attack_m = 0;
+    awakened_m = false;
+    critDamage_m = 0;
+    critRate_m = 0;
+    defense_m = 0;
+    description_m = "";
+    element_m = "";
+    hp_m = 0;
+    id_m = 0;
+    imagePath_m = "";
+    level_m = 0;
+    name_m = "";
+    priority_m = 0;
+    resistance_m = 0;
+    speed_m = 0;
+    stars_m = 0;
+    uuid_m = "";
+}
+
 Monster::~Monster()
 {
     foreach (Team *team, teams_m)
@@ -120,6 +142,11 @@ QString Monster::getName() const
     return name_m;
 }
 
+void Monster::setName(const QString &value)
+{
+    name_m = value;
+}
+
 int Monster::getLevel() const
 {
     return level_m;
@@ -138,11 +165,6 @@ QString Monster::getImagePath() const
 int Monster::getId() const
 {
     return id_m;
-}
-
-void Monster::setId(int value)
-{
-    id_m = value;
 }
 
 int Monster::getHp() const
@@ -203,11 +225,6 @@ void Monster::setCritDamage(int value)
 bool Monster::getAwakened() const
 {
     return awakened_m;
-}
-
-void Monster::setAwakened(bool value)
-{
-    awakened_m = value;
 }
 
 int Monster::getAttack() const

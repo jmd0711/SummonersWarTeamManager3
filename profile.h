@@ -38,38 +38,93 @@ public:
     friend void Team::addMonster(Monster *monster);
     friend void Team::removeMonster(Monster *monster);
 
-    QString getUuid() const;
+    int getAccuracy() const;
+    void setAccuracy(int value);
+
+    int getAttack() const;
+    void setAttack(int value);
+
+    bool getAwakened() const;
+    void setAwakened(bool value);
+
+    int getCritDamage() const;
+    void setCritDamage(int value);
+
+    int getCritRate() const;
+    void setCritRate(int value);
+
+    int getDefense() const;
+    void setDefense(int value);
+
+    QString getDescription() const;
+    void setDescription(const QString &value);
+
+    QString getElement() const;
+    //  no setter
+
+    int getHp() const;
+    void setHp(int value);
+
+    int getId() const;
+    void setId(int value);
+
+    QString getImagePath() const;
+    //  no setter
+
+    int getLevel() const;
+    void setLevel(int value);
 
     QString getName() const;
+    //  no setter (for now)
+
+    int getPriority() const;
+    void setPriority(int value);
+
+    int getResistance() const;
+    void setResistance(int value);
+
+    int getSpeed() const;
+    void setSpeed(int value);
+
+    int getStars() const;
+    void setStars(int value);
+
+    QString getUuid() const;
+    //  no setter
 
     QImage getImage() const;
+    //  no setter
 
 private:
     void addTeam(Team *team);
     void removeTeam(Team *team);
 
-    QImage  image_m;
-    QString name_m;
-    QString imagePath_m;
-    QString element_m;
-    QString description_m;
-    QString uuid_m;
-    bool    awakened_m;
-    int     id_m;
-    int     stars_m;
-    int     level_m;
-    int     hp_m;
-    int     attack_m;
-    int     defense_m;
-    int     speed_m;
-    int     critRate_m;
-    int     critDamage_m;
-    int     resistance_m;
+    //  Order of JSON attributes
     int     accuracy_m;
+    int     attack_m;
+    bool    awakened_m;
+    int     critDamage_m;
+    int     critRate_m;
+    int     defense_m;
+    QString description_m;
+    QString element_m;
+    int     hp_m;
+    int     id_m;
+    QString imagePath_m;
+    int     level_m;
+    QString name_m;
     int     priority_m;
+    int     resistance_m;
+    int     speed_m;
+    int     stars_m;
+    QString uuid_m;
+    //-----------------------------------------
+
+    QImage  image_m;
 
     QVector<Team *> teams_m;
 };
+Q_DECLARE_METATYPE(Monster *);
 
 class Profile : public QObject
 {

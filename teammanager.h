@@ -16,7 +16,7 @@
 #include "areamenu.h"
 #include "teammenu.h"
 
-#include "monsterListmodel.h"
+#include "monsterlistmodel.h"
 #include "profile.h"
 
 QT_BEGIN_NAMESPACE

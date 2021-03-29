@@ -41,12 +41,15 @@ QVariant MonsterListModel::data(const QModelIndex &index, int role) const
 //    // FIXME: Implement me!
 //    return QVariant();
     const int row = index.row();
-    const Monster *result = profile->getMonster(row);
+    Monster *result = profile->getMonster(row);
     switch (role) {
     case Qt::DisplayRole:
         return result->getName();
     case Qt::DecorationRole:
         return result->getImage();
+    case Qt::UserRole:
+        QVariant monPtr = QVariant::fromValue(result);
+        return monPtr;
     }
     return QVariant();
 }

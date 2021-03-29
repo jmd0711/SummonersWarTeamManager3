@@ -75,9 +75,44 @@ void Monster::removeTeam(Team *team)
     teams_m.erase(std::remove(teams_m.begin(), teams_m.end(), team), teams_m.end());
 }
 
-QImage Monster::getImage() const
+int Monster::getStars() const
 {
-    return image_m;
+    return stars_m;
+}
+
+void Monster::setStars(int value)
+{
+    stars_m = value;
+}
+
+int Monster::getSpeed() const
+{
+    return speed_m;
+}
+
+void Monster::setSpeed(int value)
+{
+    speed_m = value;
+}
+
+int Monster::getResistance() const
+{
+    return resistance_m;
+}
+
+void Monster::setResistance(int value)
+{
+    resistance_m = value;
+}
+
+int Monster::getPriority() const
+{
+    return priority_m;
+}
+
+void Monster::setPriority(int value)
+{
+    priority_m = value;
 }
 
 QString Monster::getName() const
@@ -85,9 +120,124 @@ QString Monster::getName() const
     return name_m;
 }
 
+int Monster::getLevel() const
+{
+    return level_m;
+}
+
+void Monster::setLevel(int value)
+{
+    level_m = value;
+}
+
+QString Monster::getImagePath() const
+{
+    return imagePath_m;
+}
+
+int Monster::getId() const
+{
+    return id_m;
+}
+
+void Monster::setId(int value)
+{
+    id_m = value;
+}
+
+int Monster::getHp() const
+{
+    return hp_m;
+}
+
+void Monster::setHp(int value)
+{
+    hp_m = value;
+}
+
+QString Monster::getElement() const
+{
+    return element_m;
+}
+
+QString Monster::getDescription() const
+{
+    return description_m;
+}
+
+void Monster::setDescription(const QString &value)
+{
+    description_m = value;
+}
+
+int Monster::getDefense() const
+{
+    return defense_m;
+}
+
+void Monster::setDefense(int value)
+{
+    defense_m = value;
+}
+
+int Monster::getCritRate() const
+{
+    return critRate_m;
+}
+
+void Monster::setCritRate(int value)
+{
+    critRate_m = value;
+}
+
+int Monster::getCritDamage() const
+{
+    return critDamage_m;
+}
+
+void Monster::setCritDamage(int value)
+{
+    critDamage_m = value;
+}
+
+bool Monster::getAwakened() const
+{
+    return awakened_m;
+}
+
+void Monster::setAwakened(bool value)
+{
+    awakened_m = value;
+}
+
+int Monster::getAttack() const
+{
+    return attack_m;
+}
+
+void Monster::setAttack(int value)
+{
+    attack_m = value;
+}
+
+int Monster::getAccuracy() const
+{
+    return accuracy_m;
+}
+
+void Monster::setAccuracy(int value)
+{
+    accuracy_m = value;
+}
+
 QString Monster::getUuid() const
 {
     return uuid_m;
+}
+
+QImage Monster::getImage() const
+{
+    return image_m;
 }
 
 Profile::Profile()

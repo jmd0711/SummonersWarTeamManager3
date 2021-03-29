@@ -6,7 +6,8 @@
 #include <QWidget>
 
 //#include "monsterlistview.h"
-#include "monsterListmodel.h"
+#include "monsterdisplay.h"
+#include "monsterlistmodel.h"
 #include "profile.h"
 
 namespace Ui {
@@ -20,6 +21,9 @@ class BoxMenu : public QWidget
 public:
     explicit BoxMenu(MonsterListModel *mLM, QWidget *parent = nullptr);
     ~BoxMenu();
+
+private slots:
+    void monsterSelected(const QModelIndex &index);
 
 private:
     Ui::BoxMenu *ui;

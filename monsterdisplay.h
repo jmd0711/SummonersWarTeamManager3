@@ -3,11 +3,7 @@
 
 #include <QDialog>
 
-#include "monster.h"
 #include "profile.h"
-
-class MonsterListView;
-class TeamWidget;
 
 namespace Ui {
 class MonsterDisplay;
@@ -24,9 +20,10 @@ public:
         ADD,
         REMOVE,
     };
-    explicit MonsterDisplay(Profile *pr, Monster *monster, Task t, MonsterListView *parent = nullptr);
-    explicit MonsterDisplay(Profile *pr, Monster *monster, Task t, TeamWidget *parent = nullptr);
+    explicit MonsterDisplay(Task t, QWidget *parent = nullptr);
     ~MonsterDisplay();
+
+    void editContents(QVariant monPointer);
 
 private slots:
     void onDeleteReleased();
@@ -47,14 +44,7 @@ signals:
 private:
     Ui::MonsterDisplay *ui;
 
-    Profile *profile;
-    Monster *monster;
-
     Task task;
-
-    //  Only used for ADD or REMOVE
-    QString battleName;
-    int teamIndex;
 };
 
 #endif // MONSTERDISPLAY_H

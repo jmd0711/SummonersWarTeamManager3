@@ -34,8 +34,8 @@ MonsterDisplay::~MonsterDisplay()
 
 void MonsterDisplay::editContents(QVariant monsterData)
 {
-    //const Monster *monster = monPointer.value<Monster *>();
     const Monster monster = monsterData.value<Monster>();
+    setWindowTitle(monster.getName());
     ui->imageLabel->setPixmap(QPixmap::fromImage(monster.getImage()));
 
     ui->nameLabel->setText(monster.getName());

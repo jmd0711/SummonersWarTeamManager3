@@ -35,6 +35,7 @@ public:
     // Remove data:
     bool removeRow(int row);
 
+    void clearProfileMonsters();
 private:
     Profile *profile;
 };

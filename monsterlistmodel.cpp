@@ -110,3 +110,11 @@ bool MonsterListModel::removeRow(int row)
     endRemoveRows();
     return true;
 }
+
+void MonsterListModel::clearProfileMonsters()
+{
+    while (profile->monstersSize() > 0)
+    {
+        removeRow(0);
+    }
+}

@@ -222,7 +222,7 @@ void Monster::setCritDamage(int value)
     critDamage_m = value;
 }
 
-bool Monster::getAwakened() const
+bool Monster::isAwakened() const
 {
     return awakened_m;
 }
@@ -311,6 +311,57 @@ Monster* Profile::getMonster(int index) const
         return monsters_m.at(index);
     else
         return nullptr;
+}
+
+QJsonDocument Profile::getJson() const
+{
+    QJsonObject saveObject;
+
+    QJsonArray monstersJsonArray;
+    foreach (Monster *mon, monsters_m)
+    {
+        QJsonObject monsterJson;
+        monsterJson.insert("accuracy", mon->getAccuracy());
+        monsterJson.insert("attack", mon->getAttack());
+        monsterJson.insert("awakened", mon->isAwakened());
+        monsterJson.insert("criticalDamage", mon->getCritDamage());
+        monsterJson.insert("criticalRate", mon->getCritRate());
+        monsterJson.insert("defense", mon->getDefense());
+        monsterJson.insert("description", mon->getDescription());
+        monsterJson.insert("element", mon->getElement());
+        monsterJson.insert("hp", mon->getHp());
+        monsterJson.insert("id", mon->getId());
+        monsterJson.insert("imagePath", mon->getImagePath());
+        monsterJson.insert("level", mon->getLevel());
+        monsterJson.insert("name", mon->getName());
+        monsterJson.insert("priority", mon->getPriority());
+        monsterJson.insert("resistance", mon->getResistance());
+        monsterJson.insert("speed", mon->getSpeed());
+        monsterJson.insert("stars", mon->getStars());
+        monsterJson.insert("uuid", mon->getUuid());
+
+        monstersJsonArray.push_back(monsterJson);
+    }
+    saveObject.insert("monsters", monstersJsonArray);
+
+//    QJsonArray teamsJsonArray;
+//    foreach (Team *team, teams_m)
+//    {
+//        QJsonObject teamJson;
+//        teamJson.insert("battle", team->getBattle());
+//        teamJson.insert("name", team->getTeamName());
+//        teamJson.insert("description", team->getTeamDescription());
+//        QJsonArray indexesJsonArray;
+//        foreach (int x, team->getMonsterIndexes())
+//        {
+//            indexesJsonArray.push_back(x);
+//        }
+//        teamJson.insert("indexes", indexesJsonArray);
+//        teamsJsonArray.push_back(teamJson);
+//    }
+//    saveObject.insert("teams", teamsJsonArray);
+    QJsonDocument doc(saveObject);
+    return doc;
 }
 
 //void Profile::addMonster(const QJsonObject &monsterData)

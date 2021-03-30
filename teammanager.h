@@ -10,6 +10,7 @@
 #include <QMessageBox>
 #include <QDir>
 #include <QInputDialog>
+#include <QUuid>
 
 #include "mainmenu.h"
 #include "boxmenu.h"
@@ -54,12 +55,19 @@ private slots:
 
     void on_actionAbout_triggered();
 
+    void onImport(QNetworkReply *reply);
+
+    void onDataReceived(QNetworkReply *reply);
+
+    void onImageReceived(QNetworkReply *reply);
+
 private:
     Ui::TeamManager *ui;
 
     Profile *profile;
     QString filePath;
     MonsterListModel *mListModel;
+    QHash<QNetworkReply *, QJsonObject> dataStorage;
 
     int lastPageIndex;
     QVector<int> lastPageStack;
@@ -76,5 +84,7 @@ private:
     TeamMenu *towerPage;        // TeamMenu
 
     void addMonster(const QJsonObject &monsterData);
+    void clearProfile();
+    void requestData(QJsonObject &partialData);
 };
 #endif // TEAMMANAGER_H

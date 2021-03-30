@@ -45,7 +45,7 @@ public:
     int getAttack() const;
     void setAttack(int value);
 
-    bool getAwakened() const;
+    bool isAwakened() const;
     //  no setter
 
     int getCritDamage() const;
@@ -144,6 +144,8 @@ public:
     void removeMonsterAt(int index);
 
     Monster* getMonster(int index) const;
+
+    QJsonDocument getJson() const;
 
 private:
     QVector<Monster *> monsters_m;

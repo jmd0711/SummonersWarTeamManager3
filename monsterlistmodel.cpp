@@ -6,21 +6,6 @@ MonsterListModel::MonsterListModel(Profile *pr, QObject *parent)
 {
 }
 
-//QVariant MonsterListModel::headerData(int section, Qt::Orientation orientation, int role) const
-//{
-//    // FIXME: Implement me!
-//}
-
-//bool MonsterListModel::setHeaderData(int section, Qt::Orientation orientation, const QVariant &value, int role)
-//{
-//    if (value != headerData(section, orientation, role)) {
-//        // FIXME: Implement me!
-//        emit headerDataChanged(orientation, section, section);
-//        return true;
-//    }
-//    return false;
-//}
-
 int MonsterListModel::rowCount(const QModelIndex &parent) const
 {
     // For list models only the root node (an invalid parent) should return the list's size. For all

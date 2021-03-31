@@ -2,15 +2,21 @@
 
 Team::Team(const QJsonObject &newTeam)
 {
-    area_m = newTeam["battle"].toString();
+    battle_m = newTeam["battle"].toString();
     teamName_m = newTeam["name"].toString();
     teamDescription_m = newTeam["description"].toString();
 }
 
 Team::Team(QString teamArea) :
-    area_m{ teamArea }
+    battle_m{ teamArea }
 {
     teamName_m = "New Team";
+    teamDescription_m = "";
+}
+Team::Team()
+{
+    battle_m = "";
+    teamName_m = "";
     teamDescription_m = "";
 }
 
@@ -32,6 +38,36 @@ void Team::removeMonster(Monster *monster)
 {
     monsters_m.erase(std::remove(monsters_m.begin(), monsters_m.end(), monster), monsters_m.end());
     monster->removeTeam(this);
+}
+
+QString Team::getTeamName() const
+{
+    return teamName_m;
+}
+
+void Team::setTeamName(const QString &value)
+{
+    teamName_m = value;
+}
+
+QString Team::getTeamDescription() const
+{
+    return teamDescription_m;
+}
+
+void Team::setTeamDescription(const QString &value)
+{
+    teamDescription_m = value;
+}
+
+QString Team::getBattle() const
+{
+    return battle_m;
+}
+
+QVector<Monster *> Team::getMonsters() const
+{
+    return monsters_m;
 }
 
 Monster::Monster(const QJsonObject &newMonster, QImage image)
@@ -261,35 +297,6 @@ Profile::Profile()
 {
 }
 
-//void Profile::loadProfile(QJsonDocument &doc)
-//{
-//    QJsonObject obj = doc.object();
-
-//    //  Load Monsters
-//    //
-//    QJsonArray monArray = obj["monsters"].toArray();
-//    foreach (const QJsonValue &value, monArray)
-//    {
-//        addMonster(value.toObject());
-////        Monster *mon = new Monster(value.toObject());
-////        monsters_m.push_back(mon);
-//    }
-
-//    //  Load Teams
-//    //
-//    QJsonArray teamArray = obj["teams"].toArray();
-//    foreach (const QJsonValue &value, teamArray)
-//    {
-//        Team *team = new Team(value.toObject());
-//        QJsonArray uuids = value.toObject()["uuids"].toArray();
-//        foreach (Monster *mon, monsters_m)
-//        {
-//            if (uuids.contains(mon->getUuid()))
-//                team->addMonster(mon);
-//        }
-//    }
-//}
-
 int Profile::monstersSize()
 {
     return monsters_m.size();
@@ -302,13 +309,39 @@ void Profile::addMonster(Monster* mon)
 
 void Profile::removeMonsterAt(int index)
 {
+
     monsters_m.removeAt(index);
+    //  TODO: handle memory leak
 }
 
 Monster* Profile::getMonster(int index) const
 {
     if (index < monsters_m.size())
         return monsters_m.at(index);
+    else
+        return nullptr;
+}
+
+int Profile::teamsSize()
+{
+    return teams_m.size();
+}
+
+void Profile::addTeam(Team *team)
+{
+    teams_m.insert(teams_m.size(), team);
+}
+
+void Profile::removeTeamAt(int index)
+{
+    teams_m.removeAt(index);
+    //  TODO: handle memory leak
+}
+
+Team *Profile::getTeam(int index) const
+{
+    if (index < teams_m.size())
+        return teams_m.at(index);
     else
         return nullptr;
 }
@@ -363,27 +396,3 @@ QJsonDocument Profile::getJson() const
     QJsonDocument doc(saveObject);
     return doc;
 }
-
-//void Profile::addMonster(const QJsonObject &monsterData)
-//{
-//    QNetworkRequest request;
-//    QNetworkAccessManager networkManager;
-//    QUrl url = QUrl(QString("https://swarfarm.com/static/herders/images/monsters/"));
-//    url.setPath(QString("%1%2").arg(url.path()).arg(monsterData["imagePath"].toString()));
-//    request.setUrl(url);
-//    QNetworkReply *reply = networkManager.get(request);
-
-//    //  Not the most optimal method
-//    //  Change later
-//    QEventLoop loop;
-//    connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
-//    connect(reply, SIGNAL(error(QNetworkReply::NetworkError)), &loop, SLOT(quit()));
-//    loop.exec();
-
-//    QByteArray bytes = reply->readAll();
-//    QImage image;
-//    image.loadFromData(bytes);
-//    Monster *mon = new Monster(monsterData, image);
-//    monsters_m.push_back(mon);
-
-//}

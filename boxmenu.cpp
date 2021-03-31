@@ -4,19 +4,15 @@
 BoxMenu::BoxMenu(MonsterListModel *mLM, QWidget *parent) :
     QWidget(parent),
     ui(new Ui::BoxMenu),
-    mListModel(mLM)
+    mListModel{ mLM }
 {
     ui->setupUi(this);
 
     auto proxyModel = new QSortFilterProxyModel(this);
     proxyModel->setSourceModel(mListModel);
 
-    //ui->setModel(proxyModel);
     ui->listView->setModel(proxyModel);
     connect(ui->listView, &QListView::clicked, this, &BoxMenu::monsterSelected);
-//    monsterListWidget = new MonsterListView(profile, MonsterListView::BOX, this);
-//    ui->scrollArea->setWidgetResizable(true);
-//    ui->scrollArea->
 }
 
 BoxMenu::~BoxMenu()
@@ -27,7 +23,6 @@ BoxMenu::~BoxMenu()
 void BoxMenu::monsterSelected(const QModelIndex &index)
 {
     MonsterDisplay monDisplay(MonsterDisplay::Task::DELETE);
-//    monDisplay.setWindowTitle(tr(""));
     monDisplay.editContents(mListModel->data(index, Qt::UserRole));
 
     switch (monDisplay.exec())
@@ -40,13 +35,4 @@ void BoxMenu::monsterSelected(const QModelIndex &index)
         mListModel->setData(index, mon, Qt::EditRole);
         break;
     }
-
-//    if (aDialog.exec()) {
-//        const QString newAddress = aDialog.address();
-//        if (newAddress != address) {
-//            const QModelIndex index = table->index(row, 1, QModelIndex());
-//            table->setData(index, newAddress, Qt::EditRole);
-//        }
-//    }
-
 }

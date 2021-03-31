@@ -18,6 +18,7 @@
 #include "teammenu.h"
 
 #include "monsterlistmodel.h"
+#include "teamlistmodel.h"
 #include "profile.h"
 
 QT_BEGIN_NAMESPACE
@@ -66,8 +67,10 @@ private:
 
     Profile *profile;
     QString filePath;
-    MonsterListModel *mListModel;
     QHash<QNetworkReply *, QJsonObject> dataStorage;
+
+    MonsterListModel *mListModel;
+    TeamListModel *tListModel;
 
     int lastPageIndex;
     QVector<int> lastPageStack;

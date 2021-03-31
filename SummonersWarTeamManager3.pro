@@ -18,11 +18,12 @@ SOURCES += \
     mainmenu.cpp \
     monsterdisplay.cpp \
     monsterlistmodel.cpp \
-    monsterlistview.cpp \
     profile.cpp \
-    teamlistview.cpp \
+    teamdisplay.cpp \
+    teamlistmodel.cpp \
     teammanager.cpp \
-    teammenu.cpp
+    teammenu.cpp \
+    teammenuitemdelegate.cpp
 
 HEADERS += \
     areamenu.h \
@@ -30,11 +31,12 @@ HEADERS += \
     mainmenu.h \
     monsterdisplay.h \
     monsterlistmodel.h \
-    monsterlistview.h \
     profile.h \
-    teamlistview.h \
+    teamdisplay.h \
+    teamlistmodel.h \
     teammanager.h \
-    teammenu.h
+    teammenu.h \
+    teammenuitemdelegate.h
 
 FORMS += \
     boxmenu.ui \
@@ -42,8 +44,7 @@ FORMS += \
     monsterdisplay.ui \
     teamdisplay.ui \
     teammanager.ui \
-    teammenu.ui \
-    teamwidget.ui
+    teammenu.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

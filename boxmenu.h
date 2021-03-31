@@ -29,9 +29,6 @@ private:
     Ui::BoxMenu *ui;
 
     MonsterListModel *mListModel;
-    //QListView listView;
-
-//    MonsterListView *monsterListWidget;
 };
 
 #endif // BOXMENU_H

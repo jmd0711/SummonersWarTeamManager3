@@ -17,17 +17,30 @@ class Team
 public:
     Team(const QJsonObject &newTeam);
     Team(QString teamArea);
+    Team();
     ~Team();
 
     void addMonster(Monster *monster);
     void removeMonster(Monster *monster);
 
+    QString getTeamName() const;
+    void setTeamName(const QString &value);
+
+    QString getTeamDescription() const;
+    void setTeamDescription(const QString &value);
+
+    QString getBattle() const;
+
+    QVector<Monster *> getMonsters() const;
+
 private:
-    QString area_m;
+    QString battle_m;
     QString teamName_m;
     QString teamDescription_m;
     QVector<Monster *> monsters_m;
 };
+
+Q_DECLARE_METATYPE(Team);
 
 class Monster
 {
@@ -134,24 +147,22 @@ class Profile : public QObject
     Q_OBJECT
 public:
     Profile();
-    //~Profile();
-
-    //void loadProfile(QJsonDocument &doc);
 
     int monstersSize();
-
-    void addMonster(Monster* mon);
+    void addMonster(Monster *mon);
     void removeMonsterAt(int index);
-
     Monster* getMonster(int index) const;
+
+    int teamsSize();
+    void addTeam(Team *team);
+    void removeTeamAt(int index);
+    Team* getTeam(int index) const;
 
     QJsonDocument getJson() const;
 
 private:
     QVector<Monster *> monsters_m;
     QVector<Team *> teams_m;
-
-    //void addMonster(const QJsonObject &monsterData);
 };
 
 #endif // PROFILE_H

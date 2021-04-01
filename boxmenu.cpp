@@ -36,3 +36,8 @@ void BoxMenu::monsterSelected(const QModelIndex &index)
         break;
     }
 }
+
+void BoxMenu::on_addButton_released()
+{
+
+}

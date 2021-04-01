@@ -1,6 +1,8 @@
 #ifndef TEAMMENU_H
 #define TEAMMENU_H
 
+#include <QDataWidgetMapper>
+#include <QLineEdit>
 #include <QListView>
 #include <QSortFilterProxyModel>
 #include <QWidget>
@@ -23,9 +25,15 @@ public:
     ~TeamMenu();
 
 private slots:
-    void teamSelected(const QModelIndex &index);
+    //void teamSelected(const QModelIndex &index);
 
     void on_addButton_released();
+
+    void updatePage(int row);
+
+    void on_editButton_released();
+
+    void on_deleteButton_released();
 
 private:
     Ui::TeamMenu *ui;
@@ -33,7 +41,10 @@ private:
     QString battleName;
 
     TeamListModel *tListModel;
-    TeamMenuItemDelegate *tDelegate;
+    QSortFilterProxyModel *proxyModel;
+    //TeamMenuItemDelegate *tDelegate;
+
+    QDataWidgetMapper *mapper;
 };
 
 #endif // TEAMMENU_H

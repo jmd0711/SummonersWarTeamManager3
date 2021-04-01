@@ -25,6 +25,8 @@ public:
 private slots:
     void monsterSelected(const QModelIndex &index);
 
+    void on_addButton_released();
+
 private:
     Ui::BoxMenu *ui;
 

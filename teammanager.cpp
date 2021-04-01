@@ -242,9 +242,8 @@ void TeamManager::on_actionImport_triggered()
 
     //  TODO:  Ask to clear profile?
 
-    QNetworkAccessManager *networkManager;
     QNetworkRequest request;
-    networkManager = new QNetworkAccessManager(this);
+    QNetworkAccessManager *networkManager = new QNetworkAccessManager(this);
     connect(networkManager, &QNetworkAccessManager::finished, this, &TeamManager::onImport);
     QUrl url = QUrl("https://swarfarm.com/api/v2/profiles/");
     url.setPath(QString("%1%2/monsters/").arg(url.path()).arg(profileName));
@@ -293,6 +292,9 @@ void TeamManager::onImport(QNetworkReply *reply)
         requestData(monsterJson);
     }
     reply->close();
+    reply->deleteLater();
+    QObject *networkManager = sender();
+    networkManager->deleteLater();
 }
 
 void TeamManager::onDataReceived(QNetworkReply *reply)
@@ -309,7 +311,11 @@ void TeamManager::onDataReceived(QNetworkReply *reply)
 
     monsterJson.insert("uuid", QUuid::createUuid().toString());
     addMonster(monsterJson);
+
     reply->close();
+    reply->deleteLater();
+    QObject *networkManager = sender();
+    networkManager->deleteLater();
 }
 
 void TeamManager::onImageReceived(QNetworkReply *reply)
@@ -323,13 +329,17 @@ void TeamManager::onImageReceived(QNetworkReply *reply)
     Monster *mon = new Monster(monsterJson, image);
     mListModel->addRow(mon);
     dataStorage.remove(reply);
+
+    reply->close();
+    reply->deleteLater();
+    QObject *networkManager = sender();
+    networkManager->deleteLater();
 }
 
 void TeamManager::addMonster(const QJsonObject &monsterData)
 {
-    QNetworkAccessManager *networkManager;
     QNetworkRequest request;
-    networkManager = new QNetworkAccessManager(this);
+    QNetworkAccessManager *networkManager = new QNetworkAccessManager(this);
     QUrl url = QUrl(QString("https://swarfarm.com/static/herders/images/monsters/"));
     url.setPath(QString("%1%2").arg(url.path()).arg(monsterData["imagePath"].toString()));
     request.setUrl(url);
@@ -346,7 +356,7 @@ void TeamManager::clearProfile()
 void TeamManager::requestData(QJsonObject &partialData)
 {
     QNetworkRequest request;
-    QNetworkAccessManager *networkManager = new QNetworkAccessManager();
+    QNetworkAccessManager *networkManager = new QNetworkAccessManager(this);
     QUrl url = QUrl("https://swarfarm.com/api/v2/monsters/");
     url.setPath(QString("%1%2/").arg(url.path()).arg(partialData["id"].toInt()));
     request.setUrl(url);

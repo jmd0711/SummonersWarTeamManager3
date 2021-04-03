@@ -22,6 +22,12 @@ public:
     explicit BoxMenu(MonsterListModel *mLM, QWidget *parent = nullptr);
     ~BoxMenu();
 
+    MonsterDisplay::Task getTask() const;
+    void setTask(const MonsterDisplay::Task &value);
+
+signals:
+    void addSelected(Monster *monster);
+
 private slots:
     void monsterSelected(const QModelIndex &index);
 
@@ -29,6 +35,7 @@ private slots:
 
 private:
     Ui::BoxMenu *ui;
+    MonsterDisplay::Task t;
 
     MonsterListModel *mListModel;
 };

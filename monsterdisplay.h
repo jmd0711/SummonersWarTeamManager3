@@ -24,7 +24,7 @@ public:
     explicit MonsterDisplay(Task t, QWidget *parent = nullptr);
     ~MonsterDisplay();
 
-    void editContents(QVariant monsterData);
+    void editContents(const Monster *monster);
 
     Monster getDataChange() const;
 

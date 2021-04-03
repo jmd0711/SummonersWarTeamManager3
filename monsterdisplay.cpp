@@ -16,9 +16,13 @@ MonsterDisplay::MonsterDisplay(Task t, QWidget *parent) :
         break;
     case MonsterDisplay::ADD:
         ui->doButton->setText("Add");
+        ui->editButton->setDisabled(true);
         break;
     case MonsterDisplay::REMOVE:
         ui->doButton->setText("Remove");
+
+        //  TODO:   allow editting in teammenu
+        ui->editButton->setDisabled(true);
         break;
     default:
         //  TODO handle EDIT. EDIT is only meant for returning.
@@ -32,27 +36,27 @@ MonsterDisplay::~MonsterDisplay()
     delete ui;
 }
 
-void MonsterDisplay::editContents(QVariant monsterData)
+void MonsterDisplay::editContents(const Monster *monster)
 {
-    const Monster monster = monsterData.value<Monster>();
-    setWindowTitle(monster.getName());
-    ui->imageLabel->setPixmap(QPixmap::fromImage(monster.getImage()));
 
-    ui->nameLabel->setText(monster.getName());
+    setWindowTitle(monster->getName());
+    ui->imageLabel->setPixmap(QPixmap::fromImage(monster->getImage()));
+
+    ui->nameLabel->setText(monster->getName());
     //TODO Awakened & element
 
-    ui->prioritySpinBox->setValue(monster.getPriority());
-    ui->levelSpinBox->setValue(monster.getLevel());
-    ui->hpSpinBox->setValue(monster.getHp());
-    ui->defenseSpinBox->setValue(monster.getDefense());
-    ui->attackSpinBox->setValue(monster.getAttack());
-    ui->speedSpinBox->setValue(monster.getSpeed());
-    ui->critRateSpinBox->setValue(monster.getCritRate());
-    ui->critDamageSpinBox->setValue(monster.getCritDamage());
-    ui->accuracySpinBox->setValue(monster.getAccuracy());
-    ui->resistanceSpinBox->setValue(monster.getResistance());
-    ui->descriptionEdit->setText(monster.getDescription());
-    ui->starsSpinBox->setValue(monster.getStars());
+    ui->prioritySpinBox->setValue(monster->getPriority());
+    ui->levelSpinBox->setValue(monster->getLevel());
+    ui->hpSpinBox->setValue(monster->getHp());
+    ui->defenseSpinBox->setValue(monster->getDefense());
+    ui->attackSpinBox->setValue(monster->getAttack());
+    ui->speedSpinBox->setValue(monster->getSpeed());
+    ui->critRateSpinBox->setValue(monster->getCritRate());
+    ui->critDamageSpinBox->setValue(monster->getCritDamage());
+    ui->accuracySpinBox->setValue(monster->getAccuracy());
+    ui->resistanceSpinBox->setValue(monster->getResistance());
+    ui->descriptionEdit->setText(monster->getDescription());
+    ui->starsSpinBox->setValue(monster->getStars());
 }
 
 void MonsterDisplay::on_editButton_released()

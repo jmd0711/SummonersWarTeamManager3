@@ -33,7 +33,7 @@ QVariant MonsterListModel::data(const QModelIndex &index, int role) const
     case Qt::DecorationRole:
         return QPixmap::fromImage(result->getImage());
     case Qt::UserRole:
-        QVariant mon = QVariant::fromValue(*result);
+        QVariant mon = QVariant::fromValue(result);
         return mon;
     }
     return QVariant();

@@ -70,6 +70,14 @@ QVector<Monster *> Team::getMonsters() const
     return monsters_m;
 }
 
+Monster *Team::getMonster(int index) const
+{
+    if (index < monsters_m.size())
+        return monsters_m[index];
+    else
+        return nullptr;
+}
+
 Monster::Monster(const QJsonObject &newMonster, QImage image)
     : image_m(image)
 {
@@ -309,9 +317,9 @@ void Profile::addMonster(Monster* mon)
 
 void Profile::removeMonsterAt(int index)
 {
-
+    Monster *mon = monsters_m[index];
     monsters_m.removeAt(index);
-    //  TODO: handle memory leak
+    delete mon;
 }
 
 Monster* Profile::getMonster(int index) const

@@ -24,7 +24,7 @@ QVariant TeamListModel::data(const QModelIndex &index, int role) const
     case Qt::ToolTipRole:
         return result->getBattle();
     case Qt::UserRole:
-        QVariant team = QVariant::fromValue(*result);
+        QVariant team = QVariant::fromValue(result);
         return team;
     }
     return QVariant();

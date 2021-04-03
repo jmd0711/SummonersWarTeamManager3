@@ -33,14 +33,16 @@ public:
 
     QVector<Monster *> getMonsters() const;
 
+    Monster* getMonster(int index) const;
+
 private:
     QString battle_m;
     QString teamName_m;
     QString teamDescription_m;
     QVector<Monster *> monsters_m;
 };
-
 Q_DECLARE_METATYPE(Team);
+Q_DECLARE_METATYPE(Team*);
 
 class Monster
 {
@@ -139,8 +141,8 @@ private:
 
     QVector<Team *> teams_m;
 };
-
 Q_DECLARE_METATYPE(Monster);
+Q_DECLARE_METATYPE(Monster*);
 
 class Profile : public QObject
 {

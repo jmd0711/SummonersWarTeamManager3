@@ -7,7 +7,7 @@ BoxMenu::BoxMenu(MonsterListModel *mLM, QWidget *parent) :
     mListModel{ mLM }
 {
     ui->setupUi(this);
-
+    t = MonsterDisplay::DELETE;
     auto proxyModel = new QSortFilterProxyModel(this);
     proxyModel->setSourceModel(mListModel);
 
@@ -22,17 +22,27 @@ BoxMenu::~BoxMenu()
 
 void BoxMenu::monsterSelected(const QModelIndex &index)
 {
-    MonsterDisplay monDisplay(MonsterDisplay::Task::DELETE);
-    monDisplay.editContents(mListModel->data(index, Qt::UserRole));
+    Monster *monster = mListModel->data(index, Qt::UserRole).value<Monster*>();
+    MonsterDisplay monDisplay(t);
+    monDisplay.editContents(monster);
 
     switch (monDisplay.exec())
     {
+    case MonsterDisplay::ADD:
+        emit addSelected(monster);
+        //  ADD is only used in a QDialog request;
+        qobject_cast<QDialog*>(this->parent())->close();
+        break;
     case MonsterDisplay::DELETE:
         mListModel->removeRow(index.row());
         break;
     case MonsterDisplay::EDIT:
+    {
         QVariant mon = QVariant::fromValue(monDisplay.getDataChange());
         mListModel->setData(index, mon, Qt::EditRole);
+        break;
+    }
+    default:
         break;
     }
 }
@@ -40,4 +50,14 @@ void BoxMenu::monsterSelected(const QModelIndex &index)
 void BoxMenu::on_addButton_released()
 {
 
+}
+
+MonsterDisplay::Task BoxMenu::getTask() const
+{
+    return t;
+}
+
+void BoxMenu::setTask(const MonsterDisplay::Task &value)
+{
+    t = value;
 }

@@ -2,11 +2,19 @@
 #define TEAMMENU_H
 
 #include <QDataWidgetMapper>
+#include <QDesktopWidget>
+#include <QDialog>
+#include <QIcon>
 #include <QLineEdit>
 #include <QListView>
 #include <QSortFilterProxyModel>
+#include <QToolButton>
+#include <QVBoxLayout>
 #include <QWidget>
 
+#include "boxmenu.h"
+#include "monsterdisplay.h"
+#include "monsterlistmodel.h"
 #include "profile.h"
 #include "teamdisplay.h"
 #include "teamlistmodel.h"
@@ -21,7 +29,7 @@ class TeamMenu : public QWidget
     Q_OBJECT
 
 public:
-    explicit TeamMenu(TeamListModel *tLM, QString name, QWidget *parent = nullptr);
+    explicit TeamMenu(MonsterListModel *mLM, TeamListModel *tLM, QString name, QWidget *parent = nullptr);
     ~TeamMenu();
 
 private slots:
@@ -35,16 +43,24 @@ private slots:
 
     void on_deleteButton_released();
 
+    void addSelectedMonster(Monster *monster);
+
 private:
     Ui::TeamMenu *ui;
+    int maxMonsters;
 
     QString battleName;
 
     TeamListModel *tListModel;
-    QSortFilterProxyModel *proxyModel;
+    QSortFilterProxyModel *tProxyModel;
+
+    MonsterListModel *mListModel;
     //TeamMenuItemDelegate *tDelegate;
 
     QDataWidgetMapper *mapper;
+    QVector<QToolButton*> monButtons;
+
+    void handleMonsterButton();
 };
 
 #endif // TEAMMENU_H

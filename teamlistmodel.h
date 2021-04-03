@@ -30,6 +30,8 @@ public:
     // Remove data:
     bool removeRow(int row);
 
+    void clearProfileTeams();
+
 private:
     Profile *profile;
 };

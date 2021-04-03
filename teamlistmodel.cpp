@@ -68,3 +68,11 @@ bool TeamListModel::removeRow(int row)
     endRemoveRows();
     return true;
 }
+
+void TeamListModel::clearProfileTeams()
+{
+    while (profile->teamsSize() > 0)
+    {
+        removeRow(0);
+    }
+}

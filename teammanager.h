@@ -68,6 +68,7 @@ private:
     Profile *profile;
     QString filePath;
     QHash<QNetworkReply *, QJsonObject> dataStorage;
+    QHash<QNetworkReply *, Monster *> monsterStorage;
 
     MonsterListModel *mListModel;
     TeamListModel *tListModel;
@@ -86,7 +87,7 @@ private:
     AreaMenu *riftPage;
     TeamMenu *towerPage;        // TeamMenu
 
-    void addMonster(const QJsonObject &monsterData);
+    void requestImage(Monster *monster);
     void clearProfile();
     void requestData(QJsonObject &partialData);
 };

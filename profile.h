@@ -47,7 +47,7 @@ Q_DECLARE_METATYPE(Team*);
 class Monster
 {
 public:
-    Monster(const QJsonObject &newMonster, QImage image);
+    Monster(const QJsonObject &newMonster);
     Monster();
     ~Monster();
 
@@ -108,7 +108,7 @@ public:
     //  no setter
 
     QImage getImage() const;
-    //  no setter
+    void setImage(const QImage &value);
 
     void setName(const QString &value);
 
@@ -161,6 +161,8 @@ public:
     Team* getTeam(int index) const;
 
     QJsonDocument getJson() const;
+
+    QVector<Monster *> getMonsters() const;
 
 private:
     QVector<Monster *> monsters_m;

@@ -19,11 +19,9 @@ SOURCES += \
     monsterdisplay.cpp \
     monsterlistmodel.cpp \
     profile.cpp \
-    teamdisplay.cpp \
     teamlistmodel.cpp \
     teammanager.cpp \
-    teammenu.cpp \
-    teammenuitemdelegate.cpp
+    teammenu.cpp
 
 HEADERS += \
     areamenu.h \
@@ -32,17 +30,14 @@ HEADERS += \
     monsterdisplay.h \
     monsterlistmodel.h \
     profile.h \
-    teamdisplay.h \
     teamlistmodel.h \
     teammanager.h \
-    teammenu.h \
-    teammenuitemdelegate.h
+    teammenu.h
 
 FORMS += \
     boxmenu.ui \
     mainmenu.ui \
     monsterdisplay.ui \
-    teamdisplay.ui \
     teammanager.ui \
     teammenu.ui
 

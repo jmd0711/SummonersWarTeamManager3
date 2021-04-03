@@ -10,6 +10,9 @@ TeamMenu::TeamMenu(MonsterListModel *mLM, TeamListModel *tLM, QString name, QWid
 {
     ui->setupUi(this);
     ui->label->setText(battleName);
+    QSizePolicy retain = ui->teamMapWidget->sizePolicy();
+    retain.setRetainSizeWhenHidden(true);
+    ui->teamMapWidget->setSizePolicy(retain);
 
     maxMonsters = 6;
     for (int i = 0; i < maxMonsters; i++)
@@ -30,27 +33,19 @@ TeamMenu::TeamMenu(MonsterListModel *mLM, TeamListModel *tLM, QString name, QWid
     tProxyModel->setFilterRole(Qt::ToolTipRole);
     tProxyModel->setFilterRegExp(QRegExp(battleName, Qt::CaseInsensitive, QRegExp::FixedString));
 
-    //TODO use QDataWidgetMapper instead
-    //ui->listView->setModel(proxyModel);
-    //connect(ui->listView, &QListView::clicked, this, &TeamMenu::teamSelected);
-
-    //tDelegate = new TeamMenuItemDelegate(this);
-    //ui->listView->setItemDelegate(tDelegate);
-
     mapper = new QDataWidgetMapper(this);
     mapper->setModel(tProxyModel);
-    if (tProxyModel->rowCount() < 1)
-    {
-        Team *team = new Team(battleName);
-        tListModel->addRow(team);
-    }
-    mapper->toFirst();
 
     connect(ui->previousButton, &QPushButton::released, mapper, &QDataWidgetMapper::toPrevious);
     connect(ui->nextButton, &QPushButton::released, mapper, &QDataWidgetMapper::toNext);
     connect(mapper, &QDataWidgetMapper::currentIndexChanged, this, &TeamMenu::updatePage);
+    connect(tProxyModel, &QAbstractItemModel::rowsInserted, this, &TeamMenu::onRowsInserted);
+    connect(tProxyModel, &QAbstractItemModel::rowsRemoved, this, &TeamMenu::onRowsRemoved);
 
-    mapper->toFirst();
+    if (tProxyModel->rowCount() > 0)
+        mapper->toFirst();
+    else
+        ui->teamMapWidget->setVisible(false);
 }
 
 TeamMenu::~TeamMenu()
@@ -80,11 +75,11 @@ void TeamMenu::on_addButton_released()
     Team *team = new Team(battleName);
     //team->setTeamName(battleName);
     tListModel->addRow(team);
-    mapper->toLast();
 }
 
 void TeamMenu::updatePage(int row)
 {
+    //  TODO:   use a delegate?
     QModelIndex proxyIndex = tProxyModel->index(mapper->currentIndex(), 0);
     QModelIndex index = tProxyModel->mapToSource(proxyIndex);
     //QModelIndex index = tListModel->index(row);
@@ -103,7 +98,7 @@ void TeamMenu::updatePage(int row)
     }
 
     ui->previousButton->setEnabled(row > 0);
-    ui->nextButton->setEnabled(row < tProxyModel->rowCount() - 1);
+    ui->nextButton->setEnabled(row < tProxyModel->rowCount() - 1 && row != -1);
 }
 
 void TeamMenu::on_editButton_released()
@@ -125,26 +120,26 @@ void TeamMenu::on_deleteButton_released()
     QModelIndex proxyIndex = tProxyModel->index(row, 0);
     QModelIndex index = tProxyModel->mapToSource(proxyIndex);
 
-    if (row > 0)
-    {
-        //  mapper currently at pos 1+
-        tListModel->removeRow(index.row());
-        mapper->setCurrentIndex(row - 1);
-    }
-    else if (tProxyModel->rowCount() > 1)
-    {
-        //  mapper currently at pos 0 with contents past 1+
-        tListModel->removeRow(index.row());
-        mapper->setCurrentIndex(0);
-    }
-    else
-    {
-        //  mapper currently at pos 0, last to get deleted
-        tListModel->removeRow(index.row());
-        Team *team = new Team(battleName);
-        tListModel->addRow(team);
-        mapper->setCurrentIndex(0);
-    }
+    tListModel->removeRow(index.row());
+
+//    if (row > 0)
+//    {
+//        //  mapper currently at pos 1+
+//        tListModel->removeRow(index.row());
+//        mapper->setCurrentIndex(row - 1);
+//    }
+//    else if (tProxyModel->rowCount() > 1)
+//    {
+//        //  mapper currently at pos 0 with contents past 1+
+//        tListModel->removeRow(index.row());
+//        mapper->setCurrentIndex(0);
+//    }
+//    else
+//    {
+//        //  mapper currently at pos 0, last to get deleted
+//        tListModel->removeRow(index.row());
+//        ui->teamMapWidget->setVisible(false);
+//    }
 }
 
 void TeamMenu::addSelectedMonster(Monster *monster)
@@ -163,6 +158,26 @@ void TeamMenu::addSelectedMonster(Monster *monster)
         else
             monButtons[i]->setIcon(QIcon());
     }
+}
+
+void TeamMenu::onRowsInserted(const QModelIndex &parent, int first, int last)
+{
+    Q_UNUSED(parent)
+    Q_UNUSED(first)
+    mapper->setCurrentIndex(last);
+    ui->teamMapWidget->setVisible(true);
+}
+
+void TeamMenu::onRowsRemoved(const QModelIndex &parent, int first, int last)
+{
+    Q_UNUSED(parent)
+    Q_UNUSED(first)
+    if (tProxyModel->rowCount() == 0)
+        ui->teamMapWidget->setVisible(false);
+    else if (last == 0)
+        mapper->setCurrentIndex(0);
+    else
+        mapper->setCurrentIndex(last - 1);
 }
 
 void TeamMenu::handleMonsterButton()

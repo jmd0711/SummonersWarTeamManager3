@@ -45,6 +45,10 @@ private slots:
 
     void addSelectedMonster(Monster *monster);
 
+    void onRowsInserted(const QModelIndex &parent, int first, int last);
+
+    void onRowsRemoved(const QModelIndex &parent, int first, int last);
+
 private:
     Ui::TeamMenu *ui;
     int maxMonsters;

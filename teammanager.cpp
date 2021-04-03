@@ -188,22 +188,32 @@ void TeamManager::on_actionOpen_triggered()
     QJsonArray monArray = obj["monsters"].toArray();
     foreach (const QJsonValue &value, monArray)
     {
-        addMonster(value.toObject());
+        Monster *monster = new Monster(value.toObject());
+        mListModel->addRow(monster);
+        requestImage(monster);
     }
 
     //  Load Teams
     //
-//    QJsonArray teamArray = obj["teams"].toArray();
-//    foreach (const QJsonValue &value, teamArray)
-//    {
-//        Team *team = new Team(value.toObject());
-//        QJsonArray uuids = value.toObject()["uuids"].toArray();
-//        foreach (Monster *mon, monsters_m)
-//        {
-//            if (uuids.contains(mon->getUuid()))
-//                team->addMonster(mon);
-//        }
-//    }
+    QJsonArray teamArray = obj["teams"].toArray();
+    foreach (const QJsonValue &value, teamArray)
+    {
+        Team *team = new Team(value.toObject());
+        QJsonArray uuids = value.toObject()["uuids"].toArray();
+        foreach (const QJsonValue &value, uuids)
+        {
+            QVector<Monster *> tempvec = profile->getMonsters();
+            foreach (Monster * monster, profile->getMonsters())
+            {
+                if (value.toString() == monster->getUuid())
+                {
+                    team->addMonster(monster);
+                    break;
+                }
+            }
+        }
+        tListModel->addRow(team);
+    }
 }
 
 void TeamManager::on_actionSave_triggered()
@@ -279,14 +289,15 @@ void TeamManager::onImport(QNetworkReply *reply)
         monsterJson.insert("criticalDamage", importedObject["base_crit_damage"].toInt() + importedObject["rune_crit_damage"].toInt());
         monsterJson.insert("criticalRate", importedObject["base_crit_rate"].toInt() + importedObject["rune_crit_rate"].toInt());
         monsterJson.insert("defense", importedObject["base_defense"].toInt() + importedObject["rune_defense"].toInt());
-        monsterJson.insert("description", "");
+        monsterJson.insert("description", importedObject["notes"]);
         monsterJson.insert("hp", importedObject["base_hp"].toInt() + importedObject["rune_hp"].toInt());
         monsterJson.insert("id", importedObject["monster"].toInt());
         monsterJson.insert("level", importedObject["level"].toInt());
-        monsterJson.insert("priority", 0);
+        monsterJson.insert("priority", importedObject["priority"]);
         monsterJson.insert("resistance", importedObject["base_resistance"].toInt() + importedObject["rune_resistance"].toInt());
         monsterJson.insert("speed", importedObject["base_speed"].toInt() + importedObject["rune_speed"].toInt());
         monsterJson.insert("stars",importedObject["stars"].toInt());
+        monsterJson.insert("uuid", importedObject["id"].toString());
 
         requestData(monsterJson);
     }
@@ -308,8 +319,9 @@ void TeamManager::onDataReceived(QNetworkReply *reply)
     monsterJson.insert("imagePath", monData["image_filename"].toString());
     monsterJson.insert("name", monData["name"].toString());
 
-    monsterJson.insert("uuid", QUuid::createUuid().toString());
-    addMonster(monsterJson);
+    Monster *monster = new Monster(monsterJson);
+    mListModel->addRow(monster);
+    requestImage(monster);
 
     reply->close();
     reply->deleteLater();
@@ -323,11 +335,12 @@ void TeamManager::onImageReceived(QNetworkReply *reply)
     QImage image;
     image.loadFromData(bytes);
 
-    QJsonObject monsterJson = dataStorage[reply];
+    Monster *monster = monsterStorage[reply];
+    monster->setImage(image);
 
-    Monster *mon = new Monster(monsterJson, image);
-    mListModel->addRow(mon);
-    dataStorage.remove(reply);
+    //Monster *mon = new Monster(monsterJson, image);
+
+    monsterStorage.remove(reply);
 
     reply->close();
     reply->deleteLater();
@@ -335,21 +348,22 @@ void TeamManager::onImageReceived(QNetworkReply *reply)
     networkManager->deleteLater();
 }
 
-void TeamManager::addMonster(const QJsonObject &monsterData)
+void TeamManager::requestImage(Monster *monster)
 {
     QNetworkRequest request;
     QNetworkAccessManager *networkManager = new QNetworkAccessManager(this);
     QUrl url = QUrl(QString("https://swarfarm.com/static/herders/images/monsters/"));
-    url.setPath(QString("%1%2").arg(url.path()).arg(monsterData["imagePath"].toString()));
+    url.setPath(QString("%1%2").arg(url.path()).arg(monster->getImagePath()));
     request.setUrl(url);
     connect(networkManager, &QNetworkAccessManager::finished, this, &TeamManager::onImageReceived);
     QNetworkReply *reply = networkManager->get(request);
-    dataStorage[reply] = monsterData;
+    monsterStorage[reply] = monster;
 }
 
 void TeamManager::clearProfile()
 {
     mListModel->clearProfileMonsters();
+    tListModel->clearProfileTeams();
 }
 
 void TeamManager::requestData(QJsonObject &partialData)

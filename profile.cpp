@@ -78,8 +78,7 @@ Monster *Team::getMonster(int index) const
         return nullptr;
 }
 
-Monster::Monster(const QJsonObject &newMonster, QImage image)
-    : image_m(image)
+Monster::Monster(const QJsonObject &newMonster)
 {
     accuracy_m = newMonster["accuracy"].toInt();
     attack_m = newMonster["attack"].toInt();
@@ -99,6 +98,7 @@ Monster::Monster(const QJsonObject &newMonster, QImage image)
     speed_m = newMonster["speed"].toInt();
     stars_m = newMonster["stars"].toInt();
     uuid_m = newMonster["uuid"].toString();
+    image_m = QImage();
 }
 
 Monster::Monster()
@@ -139,6 +139,11 @@ void Monster::addTeam(Team *team)
 void Monster::removeTeam(Team *team)
 {
     teams_m.erase(std::remove(teams_m.begin(), teams_m.end(), team), teams_m.end());
+}
+
+void Monster::setImage(const QImage &value)
+{
+    image_m = value;
 }
 
 int Monster::getStars() const
@@ -342,8 +347,9 @@ void Profile::addTeam(Team *team)
 
 void Profile::removeTeamAt(int index)
 {
+    Team *team = teams_m[index];
     teams_m.removeAt(index);
-    //  TODO: handle memory leak
+    delete team;
 }
 
 Team *Profile::getTeam(int index) const
@@ -385,22 +391,28 @@ QJsonDocument Profile::getJson() const
     }
     saveObject.insert("monsters", monstersJsonArray);
 
-//    QJsonArray teamsJsonArray;
-//    foreach (Team *team, teams_m)
-//    {
-//        QJsonObject teamJson;
-//        teamJson.insert("battle", team->getBattle());
-//        teamJson.insert("name", team->getTeamName());
-//        teamJson.insert("description", team->getTeamDescription());
-//        QJsonArray indexesJsonArray;
-//        foreach (int x, team->getMonsterIndexes())
-//        {
-//            indexesJsonArray.push_back(x);
-//        }
-//        teamJson.insert("indexes", indexesJsonArray);
-//        teamsJsonArray.push_back(teamJson);
-//    }
-//    saveObject.insert("teams", teamsJsonArray);
+    QJsonArray teamsJsonArray;
+    foreach (Team *team, teams_m)
+    {
+        QJsonObject teamJson;
+        teamJson.insert("battle", team->getBattle());
+        teamJson.insert("description", team->getTeamDescription());
+        teamJson.insert("name", team->getTeamName());
+
+        QJsonArray uuidsJsonArray;
+        foreach (Monster *monster, team->getMonsters())
+        {
+            uuidsJsonArray.push_back(monster->getUuid());
+        }
+        teamJson.insert("uuids", uuidsJsonArray);
+        teamsJsonArray.push_back(teamJson);
+    }
+    saveObject.insert("teams", teamsJsonArray);
     QJsonDocument doc(saveObject);
     return doc;
+}
+
+QVector<Monster *> Profile::getMonsters() const
+{
+    return monsters_m;
 }

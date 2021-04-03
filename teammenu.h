@@ -16,9 +16,7 @@
 #include "monsterdisplay.h"
 #include "monsterlistmodel.h"
 #include "profile.h"
-#include "teamdisplay.h"
 #include "teamlistmodel.h"
-#include "teammenuitemdelegate.h"
 
 namespace Ui {
 class TeamMenu;

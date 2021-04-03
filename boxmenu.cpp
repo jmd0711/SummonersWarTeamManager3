@@ -8,6 +8,13 @@ BoxMenu::BoxMenu(MonsterListModel *mLM, QWidget *parent) :
 {
     ui->setupUi(this);
     t = MonsterDisplay::DELETE;
+    ui->comboBox->addItem("Name");
+    ui->comboBox->addItem("Priority");
+    ui->comboBox->addItem("Monster id");
+
+    sortMethod = ui->comboBox->currentText();
+
+    //  TODO:   sorting and filtering
     auto proxyModel = new QSortFilterProxyModel(this);
     proxyModel->setSourceModel(mListModel);
 
@@ -49,7 +56,7 @@ void BoxMenu::monsterSelected(const QModelIndex &index)
 
 void BoxMenu::on_addButton_released()
 {
-
+    //  TODO
 }
 
 MonsterDisplay::Task BoxMenu::getTask() const
@@ -60,4 +67,9 @@ MonsterDisplay::Task BoxMenu::getTask() const
 void BoxMenu::setTask(const MonsterDisplay::Task &value)
 {
     t = value;
+}
+
+void BoxMenu::on_comboBox_currentIndexChanged(const QString &arg1)
+{
+
 }

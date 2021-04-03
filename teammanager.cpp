@@ -250,6 +250,7 @@ void TeamManager::on_actionImport_triggered()
     QString profileName = QInputDialog::getText(this, "Import From Swarfarm", "What is your profile name?");
 
     //  TODO:  Ask to clear profile?
+    clearProfile();
 
     QNetworkRequest request;
     QNetworkAccessManager *networkManager = new QNetworkAccessManager(this);

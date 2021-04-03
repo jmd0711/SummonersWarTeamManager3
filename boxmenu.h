@@ -33,11 +33,15 @@ private slots:
 
     void on_addButton_released();
 
+    void on_comboBox_currentIndexChanged(const QString &arg1);
+
 private:
     Ui::BoxMenu *ui;
     MonsterDisplay::Task t;
 
     MonsterListModel *mListModel;
+
+    QString sortMethod;
 };
 
 #endif // BOXMENU_H

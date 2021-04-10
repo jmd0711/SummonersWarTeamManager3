@@ -26,6 +26,12 @@ QVariant MonsterListModel::data(const QModelIndex &index, int role) const
 //    // FIXME: Implement me!
 //    return QVariant();
     const int row = index.row();
+
+    if (row < 0 || row >= profile->monstersSize())
+        return QVariant();
+    if (!index.isValid())
+        return QVariant();
+
     Monster *result = profile->getMonster(row);
     switch (role) {
     case Qt::DisplayRole:
@@ -41,7 +47,8 @@ QVariant MonsterListModel::data(const QModelIndex &index, int role) const
 
 bool MonsterListModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
-    if (index.isValid() && role == Qt::EditRole) {
+    if (index.isValid() && role == Qt::EditRole)
+    {
         Monster *currentMonster = profile->getMonster(index.row());
         const Monster dataChange = value.value<Monster>();
         currentMonster->setAccuracy(dataChange.getAccuracy());
@@ -60,6 +67,12 @@ bool MonsterListModel::setData(const QModelIndex &index, const QVariant &value, 
         emit dataChanged(index, index, {Qt::DisplayRole, Qt::EditRole});
 
         return true;
+    }
+    if (index.isValid() && role == Qt::DecorationRole)
+    {
+        Monster *currentMonster = profile->getMonster(index.row());
+        currentMonster->setImage(value.value<QImage>());
+        emit dataChanged(index, index, {Qt::DecorationRole});
     }
 
     return false;
@@ -86,6 +99,7 @@ bool MonsterListModel::addRow(Monster *mon)
     profile->addMonster(mon);
     endInsertRows();
     return true;
+
 }
 
 bool MonsterListModel::removeRow(int row)

@@ -190,7 +190,9 @@ void TeamManager::on_actionOpen_triggered()
     {
         Monster *monster = new Monster(value.toObject());
         mListModel->addRow(monster);
-        requestImage(monster);
+        QModelIndex index = mListModel->index(mListModel->rowCount() - 1);
+        requestImage(index);
+        //requestImage(monster);
     }
 
     //  Load Teams
@@ -202,7 +204,6 @@ void TeamManager::on_actionOpen_triggered()
         QJsonArray uuids = value.toObject()["uuids"].toArray();
         foreach (const QJsonValue &value, uuids)
         {
-            QVector<Monster *> tempvec = profile->getMonsters();
             foreach (Monster * monster, profile->getMonsters())
             {
                 if (value.toString() == monster->getUuid())
@@ -322,7 +323,8 @@ void TeamManager::onDataReceived(QNetworkReply *reply)
 
     Monster *monster = new Monster(monsterJson);
     mListModel->addRow(monster);
-    requestImage(monster);
+    QModelIndex index = mListModel->index(mListModel->rowCount() - 1);
+    requestImage(index);
 
     reply->close();
     reply->deleteLater();
@@ -336,8 +338,10 @@ void TeamManager::onImageReceived(QNetworkReply *reply)
     QImage image;
     image.loadFromData(bytes);
 
-    Monster *monster = monsterStorage[reply];
-    monster->setImage(image);
+//    Monster *monster = mListModel->data(monsterStorage[reply], Qt::UserRole).value<Monster*>();
+//    monster->setImage(image);
+
+    mListModel->setData(monsterStorage[reply], image, Qt::DecorationRole);
 
     //Monster *mon = new Monster(monsterJson, image);
 
@@ -349,8 +353,9 @@ void TeamManager::onImageReceived(QNetworkReply *reply)
     networkManager->deleteLater();
 }
 
-void TeamManager::requestImage(Monster *monster)
+void TeamManager::requestImage(const QModelIndex &index)
 {
+    Monster *monster = mListModel->data(index, Qt::UserRole).value<Monster*>();
     QNetworkRequest request;
     QNetworkAccessManager *networkManager = new QNetworkAccessManager(this);
     QUrl url = QUrl(QString("https://swarfarm.com/static/herders/images/monsters/"));
@@ -358,7 +363,7 @@ void TeamManager::requestImage(Monster *monster)
     request.setUrl(url);
     connect(networkManager, &QNetworkAccessManager::finished, this, &TeamManager::onImageReceived);
     QNetworkReply *reply = networkManager->get(request);
-    monsterStorage[reply] = monster;
+    monsterStorage[reply] = index;
 }
 
 void TeamManager::clearProfile()

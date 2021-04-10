@@ -7,6 +7,7 @@
 
 //#include "monsterlistview.h"
 #include "monsterdisplay.h"
+#include "monsterfilterproxymodel.h"
 #include "monsterlistmodel.h"
 #include "profile.h"
 
@@ -29,19 +30,19 @@ signals:
     void addSelected(Monster *monster);
 
 private slots:
-    void monsterSelected(const QModelIndex &index);
+    void monsterSelected(const QModelIndex &proxyIndex);
 
-    void on_addButton_released();
+    //void on_comboBox_currentIndexChanged(const QString &arg1);
 
-    void on_comboBox_currentIndexChanged(const QString &arg1);
+    void on_comboBox_currentTextChanged(const QString &arg1);
 
 private:
     Ui::BoxMenu *ui;
     MonsterDisplay::Task t;
 
     MonsterListModel *mListModel;
-
-    QString sortMethod;
+    MonsterFilterProxyModel *proxyModel;
+    QListView *listView;
 };
 
 #endif // BOXMENU_H

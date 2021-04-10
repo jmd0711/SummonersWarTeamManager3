@@ -7,19 +7,34 @@ BoxMenu::BoxMenu(MonsterListModel *mLM, QWidget *parent) :
     mListModel{ mLM }
 {
     ui->setupUi(this);
-    t = MonsterDisplay::DELETE;
-    ui->comboBox->addItem("Name");
-    ui->comboBox->addItem("Priority");
-    ui->comboBox->addItem("Monster id");
 
-    sortMethod = ui->comboBox->currentText();
+    t = MonsterDisplay::DELETE;
+    proxyModel = new MonsterFilterProxyModel(this);
+
+    listView = new QListView(this);
+    listView->setViewMode(QListView::IconMode);
+    listView->setFlow(QListView::LeftToRight);
+    //listView->setResizeMode(QListView::Adjust);
+    listView->setTextElideMode(Qt::ElideRight);
+    listView->setGridSize(QSize(128, 135));
+    //listView->setItemAlignment(Qt::AlignLeft);
+    ui->verticalLayout->addWidget(listView);
 
     //  TODO:   sorting and filtering
-    auto proxyModel = new QSortFilterProxyModel(this);
-    proxyModel->setSourceModel(mListModel);
 
-    ui->listView->setModel(proxyModel);
-    connect(ui->listView, &QListView::clicked, this, &BoxMenu::monsterSelected);
+    //proxyModel->setSourceModel(proxyModel);
+    //proxyModel->sort(-1);
+
+    //QSortFilterProxyModel *proxyModel = new QSortFilterProxyModel(this);
+    proxyModel->setSourceModel(mListModel);
+    proxyModel->setDynamicSortFilter(true);
+    listView->setModel(proxyModel);
+
+    ui->comboBox->addItem("Monster id");
+    ui->comboBox->addItem("Name");
+    ui->comboBox->addItem("Priority");
+
+    connect(listView, &QListView::clicked, this, &BoxMenu::monsterSelected);
 }
 
 BoxMenu::~BoxMenu()
@@ -27,8 +42,9 @@ BoxMenu::~BoxMenu()
     delete ui;
 }
 
-void BoxMenu::monsterSelected(const QModelIndex &index)
+void BoxMenu::monsterSelected(const QModelIndex &proxyIndex)
 {
+    QModelIndex index = proxyModel->mapToSource(proxyIndex);
     Monster *monster = mListModel->data(index, Qt::UserRole).value<Monster*>();
     MonsterDisplay monDisplay(t);
     monDisplay.editContents(monster);
@@ -54,11 +70,6 @@ void BoxMenu::monsterSelected(const QModelIndex &index)
     }
 }
 
-void BoxMenu::on_addButton_released()
-{
-    //  TODO
-}
-
 MonsterDisplay::Task BoxMenu::getTask() const
 {
     return t;
@@ -69,7 +80,29 @@ void BoxMenu::setTask(const MonsterDisplay::Task &value)
     t = value;
 }
 
-void BoxMenu::on_comboBox_currentIndexChanged(const QString &arg1)
-{
 
+void BoxMenu::on_comboBox_currentTextChanged(const QString &arg1)
+{
+    //  sorts twice to force a sort when "lessThan" method is changed. NOT INTENDED AND NEEDS FIX
+    //  TODO:   Fix
+    if (arg1 == "Name")
+    {
+        proxyModel->setSortBy(MonsterFilterProxyModel::NAME);
+        proxyModel->sort(0, Qt::DescendingOrder);
+        proxyModel->sort(0, Qt::AscendingOrder);
+    }
+    else if (arg1 == "Priority")
+    {
+        proxyModel->setSortBy(MonsterFilterProxyModel::PRIORITY);
+        proxyModel->sort(0, Qt::AscendingOrder);
+        proxyModel->sort(0, Qt::DescendingOrder);
+    }
+    else
+    {
+        proxyModel->setSortBy(MonsterFilterProxyModel::DEFAULT);
+        proxyModel->sort(0, Qt::DescendingOrder);
+        proxyModel->sort(0, Qt::AscendingOrder);
+    }
+
+    //listView->reset();
 }

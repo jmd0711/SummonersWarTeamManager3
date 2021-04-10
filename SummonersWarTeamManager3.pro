@@ -17,6 +17,7 @@ SOURCES += \
     main.cpp \
     mainmenu.cpp \
     monsterdisplay.cpp \
+    monsterfilterproxymodel.cpp \
     monsterlistmodel.cpp \
     profile.cpp \
     teamlistmodel.cpp \
@@ -28,6 +29,7 @@ HEADERS += \
     boxmenu.h \
     mainmenu.h \
     monsterdisplay.h \
+    monsterfilterproxymodel.h \
     monsterlistmodel.h \
     profile.h \
     teamlistmodel.h \

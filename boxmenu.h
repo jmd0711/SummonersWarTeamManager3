@@ -36,6 +36,8 @@ private slots:
 
     void on_comboBox_currentTextChanged(const QString &arg1);
 
+    void on_lineEdit_textChanged(const QString &arg1);
+
 private:
     Ui::BoxMenu *ui;
     MonsterDisplay::Task t;

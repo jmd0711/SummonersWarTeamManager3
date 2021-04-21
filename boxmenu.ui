@@ -53,14 +53,7 @@
      <item>
       <widget class="QLineEdit" name="lineEdit">
        <property name="placeholderText">
-        <string>NOT IMPLEMENTED</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="searchButton">
-       <property name="text">
-        <string>Search</string>
+        <string>SEARCH</string>
        </property>
       </widget>
      </item>

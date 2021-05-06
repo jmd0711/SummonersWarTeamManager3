@@ -44,8 +44,9 @@ private:
 Q_DECLARE_METATYPE(Team);
 Q_DECLARE_METATYPE(Team*);
 
-class Monster
+class Monster : public QObject
 {
+    Q_OBJECT
 public:
     Monster(const QJsonObject &newMonster);
     Monster(const Monster &copyMonster);
@@ -113,6 +114,12 @@ public:
 
     void setName(const QString &value);
 
+private slots:
+    void onImageReceived(QNetworkReply *reply);
+
+signals:
+    void imageChanged();
+
 private:
     void addTeam(Team *team);
     void removeTeam(Team *team);
@@ -164,6 +171,12 @@ public:
     QJsonDocument getJson() const;
 
     QVector<Monster *> getMonsters() const;
+
+private slots:
+    void onMonsterImageChanged();
+
+signals:
+    void monsterImageChanged(int index);
 
 private:
     QVector<Monster *> monsters_m;

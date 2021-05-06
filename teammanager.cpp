@@ -191,8 +191,8 @@ void TeamManager::on_actionOpen_triggered()
     {
         Monster *monster = new Monster(value.toObject());
         mListModel->addRow(monster);
-        QModelIndex index = mListModel->index(mListModel->rowCount() - 1);
-        requestImage(index);
+        //QModelIndex index = mListModel->index(mListModel->rowCount() - 1);
+        //requestImage(index);
         //requestImage(monster);
     }
 
@@ -324,8 +324,8 @@ void TeamManager::onDataReceived(QNetworkReply *reply)
 
     Monster *monster = new Monster(monsterJson);
     mListModel->addRow(monster);
-    QModelIndex index = mListModel->index(mListModel->rowCount() - 1);
-    requestImage(index);
+    //QModelIndex index = mListModel->index(mListModel->rowCount() - 1);
+    //requestImage(index);
 
     reply->close();
     reply->deleteLater();
@@ -333,39 +333,39 @@ void TeamManager::onDataReceived(QNetworkReply *reply)
     networkManager->deleteLater();
 }
 
-void TeamManager::onImageReceived(QNetworkReply *reply)
-{
-    QByteArray bytes = reply->readAll();
-    QImage image;
-    image.loadFromData(bytes);
+//void TeamManager::onImageReceived(QNetworkReply *reply)
+//{
+//    QByteArray bytes = reply->readAll();
+//    QImage image;
+//    image.loadFromData(bytes);
 
-//    Monster *monster = mListModel->data(monsterStorage[reply], Qt::UserRole).value<Monster*>();
-//    monster->setImage(image);
+////    Monster *monster = mListModel->data(monsterStorage[reply], Qt::UserRole).value<Monster*>();
+////    monster->setImage(image);
 
-    mListModel->setData(monsterStorage[reply], image, Qt::DecorationRole);
+//    mListModel->setData(monsterStorage[reply], image, Qt::DecorationRole);
 
-    //Monster *mon = new Monster(monsterJson, image);
+//    //Monster *mon = new Monster(monsterJson, image);
 
-    monsterStorage.remove(reply);
+//    monsterStorage.remove(reply);
 
-    reply->close();
-    reply->deleteLater();
-    QObject *networkManager = sender();
-    networkManager->deleteLater();
-}
+//    reply->close();
+//    reply->deleteLater();
+//    QObject *networkManager = sender();
+//    networkManager->deleteLater();
+//}
 
-void TeamManager::requestImage(const QModelIndex &index)
-{
-    Monster *monster = mListModel->data(index, Qt::UserRole).value<Monster*>();
-    QNetworkRequest request;
-    QNetworkAccessManager *networkManager = new QNetworkAccessManager(this);
-    QUrl url = QUrl(QString("https://swarfarm.com/static/herders/images/monsters/"));
-    url.setPath(QString("%1%2").arg(url.path()).arg(monster->getImagePath()));
-    request.setUrl(url);
-    connect(networkManager, &QNetworkAccessManager::finished, this, &TeamManager::onImageReceived);
-    QNetworkReply *reply = networkManager->get(request);
-    monsterStorage[reply] = index;
-}
+//void TeamManager::requestImage(const QModelIndex &index)
+//{
+//    Monster *monster = mListModel->data(index, Qt::UserRole).value<Monster*>();
+//    QNetworkRequest request;
+//    QNetworkAccessManager *networkManager = new QNetworkAccessManager(this);
+//    QUrl url = QUrl(QString("https://swarfarm.com/static/herders/images/monsters/"));
+//    url.setPath(QString("%1%2").arg(url.path()).arg(monster->getImagePath()));
+//    request.setUrl(url);
+//    connect(networkManager, &QNetworkAccessManager::finished, this, &TeamManager::onImageReceived);
+//    QNetworkReply *reply = networkManager->get(request);
+//    monsterStorage[reply] = index;
+//}
 
 void TeamManager::clearProfile()
 {

@@ -4,6 +4,7 @@ MonsterListModel::MonsterListModel(Profile *pr, QObject *parent)
     : QAbstractListModel(parent),
       profile(pr)
 {
+    connect(profile, &Profile::monsterImageChanged, this, &MonsterListModel::onMonsterImageChanged);
 }
 
 int MonsterListModel::rowCount(const QModelIndex &parent) const
@@ -68,12 +69,12 @@ bool MonsterListModel::setData(const QModelIndex &index, const QVariant &value, 
 
         return true;
     }
-    if (index.isValid() && role == Qt::DecorationRole)
-    {
-        Monster *currentMonster = profile->getMonster(index.row());
-        currentMonster->setImage(value.value<QImage>());
-        emit dataChanged(index, index, {Qt::DecorationRole});
-    }
+//    if (index.isValid() && role == Qt::DecorationRole)
+//    {
+//        Monster *currentMonster = profile->getMonster(index.row());
+//        currentMonster->setImage(value.value<QImage>());
+
+//    }
 
     return false;
 //    if (data(index, role) != value) {
@@ -116,4 +117,10 @@ void MonsterListModel::clearProfileMonsters()
     {
         removeRow(0);
     }
+}
+
+void MonsterListModel::onMonsterImageChanged(int row)
+{
+    QModelIndex index = this->index(row, 0);
+    emit dataChanged(index, index, {Qt::DecorationRole});
 }

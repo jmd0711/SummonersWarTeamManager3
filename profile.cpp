@@ -98,7 +98,15 @@ Monster::Monster(const QJsonObject &newMonster)
     speed_m = newMonster["speed"].toInt();
     stars_m = newMonster["stars"].toInt();
     uuid_m = newMonster["uuid"].toString();
+
     image_m = QImage();
+    QNetworkRequest request;
+    QNetworkAccessManager *networkManager = new QNetworkAccessManager(this);
+    QUrl url = QUrl(QString("https://swarfarm.com/static/herders/images/monsters/"));
+    url.setPath(QString("%1%2").arg(url.path()).arg(imagePath_m));
+    request.setUrl(url);
+    connect(networkManager, &QNetworkAccessManager::finished, this, &Monster::onImageReceived);
+    networkManager->get(request);
 }
 
 Monster::Monster(const Monster &copyMonster)
@@ -330,6 +338,21 @@ QImage Monster::getImage() const
     return image_m;
 }
 
+void Monster::onImageReceived(QNetworkReply *reply)
+{
+    QByteArray bytes = reply->readAll();
+    QImage image;
+    image.loadFromData(bytes);
+
+    image_m = image;
+
+    reply->close();
+    reply->deleteLater();
+    QObject *networkManager = sender();
+    networkManager->deleteLater();
+    emit imageChanged();
+}
+
 Profile::Profile()
 {
 }
@@ -342,6 +365,7 @@ int Profile::monstersSize()
 void Profile::addMonster(Monster* mon)
 {
     monsters_m.insert(monsters_m.size(), mon);
+    connect(mon, &Monster::imageChanged, this, &Profile::onMonsterImageChanged);
 }
 
 void Profile::removeMonsterAt(int index)
@@ -439,4 +463,10 @@ QJsonDocument Profile::getJson() const
 QVector<Monster *> Profile::getMonsters() const
 {
     return monsters_m;
+}
+
+void Profile::onMonsterImageChanged()
+{
+    int index = monsters_m.indexOf(dynamic_cast<Monster*>(QObject::sender()));
+    emit monsterImageChanged(index);
 }

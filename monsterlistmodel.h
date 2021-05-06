@@ -36,6 +36,9 @@ public:
     bool removeRow(int row);
 
     void clearProfileMonsters();
+
+private slots:
+    void onMonsterImageChanged(int row);
 private:
     Profile *profile;
 };

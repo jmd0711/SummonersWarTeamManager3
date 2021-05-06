@@ -60,7 +60,7 @@ private slots:
 
     void onDataReceived(QNetworkReply *reply);
 
-    void onImageReceived(QNetworkReply *reply);
+    //void onImageReceived(QNetworkReply *reply);
 
 private:
     Ui::TeamManager *ui;
@@ -87,7 +87,7 @@ private:
     AreaMenu *riftPage;
     TeamMenu *towerPage;        // TeamMenu
 
-    void requestImage(const QModelIndex &index);
+    //void requestImage(const QModelIndex &index);
     void clearProfile();
     void requestData(QJsonObject &partialData);
 };

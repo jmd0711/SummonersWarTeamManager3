@@ -1,8 +1,13 @@
 #ifndef BOXMENU_H
 #define BOXMENU_H
 
+#include <QDesktopWidget>
+#include <QInputDialog>
 #include <QListView>
 #include <QSortFilterProxyModel>
+#include <QUrl>
+#include <QUrlQuery>
+#include <QUuid>
 #include <QWidget>
 
 //#include "monsterlistview.h"
@@ -25,18 +30,23 @@ public:
 
     MonsterDisplay::Task getTask() const;
     void setTask(const MonsterDisplay::Task &value);
+    void enableAddButton(bool isEnabled);
 
 signals:
     void addSelected(Monster *monster);
 
 private slots:
+    void addSelectedMonster(Monster *monster);
+
     void monsterSelected(const QModelIndex &proxyIndex);
 
-    //void on_comboBox_currentIndexChanged(const QString &arg1);
+    void onMonstersReceived(QNetworkReply *reply);
 
     void on_comboBox_currentTextChanged(const QString &arg1);
 
     void on_lineEdit_textChanged(const QString &arg1);
+
+    void on_addButton_released();
 
 private:
     Ui::BoxMenu *ui;
@@ -45,6 +55,9 @@ private:
     MonsterListModel *mListModel;
     MonsterFilterProxyModel *proxyModel;
     QListView *listView;
+
+    Profile *addProfile;
+    MonsterListModel *addListModel;
 };
 
 #endif // BOXMENU_H

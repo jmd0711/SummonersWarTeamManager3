@@ -101,6 +101,30 @@ Monster::Monster(const QJsonObject &newMonster)
     image_m = QImage();
 }
 
+Monster::Monster(const Monster &copyMonster)
+{
+    accuracy_m = copyMonster.getAccuracy();
+    attack_m = copyMonster.getAttack();
+    awakened_m = copyMonster.isAwakened();
+    critDamage_m = copyMonster.getCritDamage();
+    critRate_m = copyMonster.getCritRate();
+    defense_m = copyMonster.getDefense();
+    description_m = copyMonster.getDescription();
+    element_m = copyMonster.getElement();
+    hp_m = copyMonster.getHp();
+    id_m = copyMonster.getId();
+    imagePath_m = copyMonster.getImagePath();
+    level_m = copyMonster.getLevel();
+    name_m = copyMonster.getName();
+    priority_m = copyMonster.getPriority();
+    resistance_m = copyMonster.getResistance();
+    speed_m = copyMonster.getSpeed();
+    stars_m = copyMonster.getStars();
+    uuid_m = copyMonster.getUuid();
+
+    image_m = copyMonster.getImage();
+}
+
 Monster::Monster()
 {
     accuracy_m = 0;

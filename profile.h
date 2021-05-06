@@ -48,6 +48,7 @@ class Monster
 {
 public:
     Monster(const QJsonObject &newMonster);
+    Monster(const Monster &copyMonster);
     Monster();
     ~Monster();
 

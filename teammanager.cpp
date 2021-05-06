@@ -19,6 +19,7 @@ TeamManager::TeamManager(QWidget *parent)
 
     menuPage = new MainMenu(this);
     boxPage = new BoxMenu(mListModel, this);
+    boxPage->enableAddButton(true);
     layout->addWidget(menuPage);
     layout->addWidget(boxPage);
 

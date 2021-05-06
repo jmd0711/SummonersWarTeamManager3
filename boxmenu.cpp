@@ -35,6 +35,9 @@ BoxMenu::BoxMenu(MonsterListModel *mLM, QWidget *parent) :
     ui->comboBox->addItem("Priority");
 
     connect(listView, &QListView::clicked, this, &BoxMenu::monsterSelected);
+
+    addProfile = new Profile();
+    addListModel = new MonsterListModel(addProfile, this);
 }
 
 BoxMenu::~BoxMenu()
@@ -70,6 +73,61 @@ void BoxMenu::monsterSelected(const QModelIndex &proxyIndex)
     }
 }
 
+void BoxMenu::onMonstersReceived(QNetworkReply *reply)
+{
+    addListModel->clearProfileMonsters();
+
+    QJsonDocument doc = QJsonDocument::fromJson(reply->readAll());
+    QJsonObject obj = doc.object();
+    QJsonArray array = obj["results"].toArray();
+
+    foreach (const QJsonValue &value, array)
+    {
+        QJsonObject importedObject = value.toObject();
+
+        QJsonObject monsterJson;
+        monsterJson.insert("accuracy", importedObject["accuracy"].toInt());
+        monsterJson.insert("attack", importedObject["max_lvl_attack"].toInt());
+        monsterJson.insert("awakened", !importedObject["awaken_lvl"].toBool());
+        monsterJson.insert("criticalDamage", importedObject["crit_damage"].toInt());
+        monsterJson.insert("criticalRate", importedObject["crit_rate"].toInt());
+        monsterJson.insert("defense", importedObject["max_lvl_defense"].toInt());
+        monsterJson.insert("description", "");
+        monsterJson.insert("element", importedObject["element"].toString());
+        monsterJson.insert("hp", importedObject["max_lvl_hp"].toInt());
+        monsterJson.insert("id", importedObject["id"].toInt());
+        monsterJson.insert("imagePath", importedObject["image_filename"].toString());
+        monsterJson.insert("level", 40);
+        monsterJson.insert("name", importedObject["name"].toString());
+        monsterJson.insert("priority", 0);
+        monsterJson.insert("resistance", importedObject["resistance"].toInt());
+        monsterJson.insert("speed", importedObject["speed"].toInt());
+        monsterJson.insert("stars",importedObject["natural_stars"].toInt());
+        monsterJson.insert("uuid", QUuid::createUuid().toString());
+
+        Monster *monster = new Monster(monsterJson);
+        addListModel->addRow(monster);
+        //requestData(monsterJson);
+    }
+    reply->close();
+    reply->deleteLater();
+    QObject *networkManager = sender();
+    networkManager->deleteLater();
+
+    //  TODO make a new class request menu
+    QDialog *requestWindow = new QDialog(this);
+    requestWindow->resize(QDesktopWidget().availableGeometry(this).size() * 0.7);
+    QVBoxLayout *requestLayout = new QVBoxLayout(requestWindow);
+    //  TODO change mListModel to new profile
+    BoxMenu *requestMenu = new BoxMenu(addListModel, requestWindow);
+    requestMenu->setTask(MonsterDisplay::ADD);
+
+    requestWindow->setLayout(requestLayout);
+    requestWindow->layout()->addWidget(requestMenu);
+    connect(requestMenu, &BoxMenu::addSelected, this, &BoxMenu::addSelectedMonster);
+    requestWindow->exec();
+}
+
 MonsterDisplay::Task BoxMenu::getTask() const
 {
     return t;
@@ -78,6 +136,17 @@ MonsterDisplay::Task BoxMenu::getTask() const
 void BoxMenu::setTask(const MonsterDisplay::Task &value)
 {
     t = value;
+}
+
+void BoxMenu::enableAddButton(bool isEnabled)
+{
+    ui->addButton->setEnabled(isEnabled);
+}
+
+void BoxMenu::addSelectedMonster(Monster *monster)
+{
+    Monster *newMonster = new Monster(*monster);
+    mListModel->addRow(newMonster);
 }
 
 
@@ -110,4 +179,19 @@ void BoxMenu::on_comboBox_currentTextChanged(const QString &arg1)
 void BoxMenu::on_lineEdit_textChanged(const QString &arg1)
 {
     proxyModel->setFilterRegExp(QRegExp(arg1, Qt::CaseInsensitive, QRegExp::FixedString));
+}
+
+void BoxMenu::on_addButton_released()
+{
+    QString searchName = QInputDialog::getText(this, "Search Monster", "What monster do you want to add?");
+
+    QNetworkRequest request;
+    QNetworkAccessManager *networkManager = new QNetworkAccessManager(this);
+    connect(networkManager, &QNetworkAccessManager::finished, this, &BoxMenu::onMonstersReceived);
+    QUrl url = QUrl("https://swarfarm.com/api/v2/monsters/");
+    QUrlQuery query;
+    query.addQueryItem("name", searchName);
+    url.setQuery(query.query());
+    request.setUrl(url);
+    networkManager->get(request);
 }

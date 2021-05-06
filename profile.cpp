@@ -465,6 +465,13 @@ QVector<Monster *> Profile::getMonsters() const
     return monsters_m;
 }
 
+bool Profile::hasUUID(Monster *monster) const
+{
+    auto monstersIter = std::find_if(monsters_m.begin(), monsters_m.end(),
+                                     [monster](Monster *mon) { return mon->getUuid() == monster->getUuid(); });
+    return monstersIter != monsters_m.end();
+}
+
 void Profile::onMonsterImageChanged()
 {
     int index = monsters_m.indexOf(dynamic_cast<Monster*>(QObject::sender()));

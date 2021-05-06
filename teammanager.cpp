@@ -249,18 +249,30 @@ void TeamManager::on_actionSave_As_triggered()
 
 void TeamManager::on_actionImport_triggered()
 {
-    QString profileName = QInputDialog::getText(this, "Import From Swarfarm", "What is your profile name?");
-
+    //QString profileName = QInputDialog::getText(this, "Import From Swarfarm", "What is your profile name?");
     //  TODO:  Ask to clear profile?
-    clearProfile();
-
-    QNetworkRequest request;
-    QNetworkAccessManager *networkManager = new QNetworkAccessManager(this);
-    connect(networkManager, &QNetworkAccessManager::finished, this, &TeamManager::onImport);
-    QUrl url = QUrl("https://swarfarm.com/api/v2/profiles/");
-    url.setPath(QString("%1%2/monsters/").arg(url.path()).arg(profileName));
-    request.setUrl(url);
-    networkManager->get(request);
+    ImportDialog::Task t;
+    bool ok;
+    QString profileName = ImportDialog::getInput(this, &t, &ok);
+    if (ok)
+    {
+        if (t == ImportDialog::Merge)
+        {
+            qDebug() << "merge";
+        }
+        if (t == ImportDialog::New)
+        {
+            clearProfile();
+            qDebug() << "new";
+        }
+        QNetworkRequest request;
+        QNetworkAccessManager *networkManager = new QNetworkAccessManager(this);
+        connect(networkManager, &QNetworkAccessManager::finished, this, &TeamManager::onImport);
+        QUrl url = QUrl("https://swarfarm.com/api/v2/profiles/");
+        url.setPath(QString("%1%2/monsters/").arg(url.path()).arg(profileName));
+        request.setUrl(url);
+        networkManager->get(request);
+    }
 }
 
 void TeamManager::on_actionAbout_triggered()
@@ -323,7 +335,8 @@ void TeamManager::onDataReceived(QNetworkReply *reply)
     monsterJson.insert("name", monData["name"].toString());
 
     Monster *monster = new Monster(monsterJson);
-    mListModel->addRow(monster);
+    if (!profile->hasUUID(monster))
+        mListModel->addRow(monster);
     //QModelIndex index = mListModel->index(mListModel->rowCount() - 1);
     //requestImage(index);
 

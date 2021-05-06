@@ -172,6 +172,8 @@ public:
 
     QVector<Monster *> getMonsters() const;
 
+    bool hasUUID(Monster *monster) const;
+
 private slots:
     void onMonsterImageChanged();
 

@@ -14,6 +14,7 @@ CONFIG += c++11
 SOURCES += \
     areamenu.cpp \
     boxmenu.cpp \
+    importdialog.cpp \
     main.cpp \
     mainmenu.cpp \
     monsterdisplay.cpp \
@@ -27,6 +28,7 @@ SOURCES += \
 HEADERS += \
     areamenu.h \
     boxmenu.h \
+    importdialog.h \
     mainmenu.h \
     monsterdisplay.h \
     monsterfilterproxymodel.h \
@@ -38,6 +40,7 @@ HEADERS += \
 
 FORMS += \
     boxmenu.ui \
+    importdialog.ui \
     mainmenu.ui \
     monsterdisplay.ui \
     teammanager.ui \
